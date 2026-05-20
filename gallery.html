@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rayul — Gallery</title>
+<link rel="icon" type="image/png" href="assets/images/favicon - white.png">
+<link rel="apple-touch-icon" href="assets/images/favicon - white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   RESET & ROOT
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: rgb(250, 247, 239);
+  --black: #000000;
+  --red:   rgb(255, 15, 0);
+  --gray:  rgb(66, 66, 66);
+  --font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+@keyframes menuItemIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes titleRollOutUp   { from { transform: translateY(0);      opacity: 1; } to { transform: translateY(-110%); opacity: 0; } }
+@keyframes titleRollOutDown { from { transform: translateY(0);      opacity: 1; } to { transform: translateY(110%);  opacity: 0; } }
+@keyframes titleRollInUp    { from { transform: translateY(110%);   opacity: 0; } to { transform: translateY(0);     opacity: 1; } }
+@keyframes titleRollInDown  { from { transform: translateY(-110%);  opacity: 0; } to { transform: translateY(0);     opacity: 1; } }
+
+@keyframes lineGrow {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  cursor: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 100vh;
+  user-select: none;
+}
+
+/* ============================================================
+   GRAIN OVERLAY
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  background: var(--red);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+  transition: width 0.18s ease, height 0.18s ease, opacity 0.2s ease;
+  opacity: 0;
+}
+#cursor.visible  { opacity: 1; }
+#cursor.expanded { width: 26px; height: 26px; }
+
+/* ============================================================
+   TOP GRADIENT FADE
+   ============================================================ */
+#top-fade {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  height: 130px;
+  pointer-events: none;
+  z-index: 20;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.96) 0%, transparent 100%);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 32px 34px;
+  pointer-events: none;
+}
+#nav > * { pointer-events: auto; }
+
+.nav-logo {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  line-height: 0;
+}
+.nav-logo img { height: 34px; width: auto; }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+
+/* ============================================================
+   SELECTOR CARD (nav pill)
+   ============================================================ */
+#film-selector { position: relative; }
+
+.selector-card {
+  background: rgba(250, 247, 239, 0.97);
+  padding: 0;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 10px;
+  cursor: none;
+  backdrop-filter: blur(12px);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+.selector-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.26); border-color: rgba(0,0,0,0.18); }
+
+.selector-top {
+  display: flex;
+  align-items: center;
+  height: 38px;
+}
+.selector-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px 0 13px;
+  flex: 1;
+}
+.selector-title-wrap { overflow: hidden; }
+.selector-title {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #0a0a0a;
+  display: block;
+  will-change: transform, opacity;
+  white-space: nowrap;
+}
+.selector-title.roll-exit-up    { animation: titleRollOutUp   0.18s ease-in  forwards; }
+.selector-title.roll-exit-down  { animation: titleRollOutDown 0.18s ease-in  forwards; }
+.selector-title.roll-enter-up   { animation: titleRollInUp    0.22s ease-out forwards; }
+.selector-title.roll-enter-down { animation: titleRollInDown  0.22s ease-out forwards; }
+
+.selector-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+  animation: dotBlink 2.4s ease-in-out infinite;
+}
+.selector-chevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0.45;
+  margin-left: 4px;
+}
+.selector-chevron svg {
+  width: 9px; height: 9px;
+  stroke: #0a0a0a; fill: none;
+  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.selector-pill-divider { width: 1px; height: 20px; background: rgba(0,0,0,0.1); flex-shrink: 0; }
+.selector-hamburger {
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  gap: 4px; width: 40px; height: 38px; flex-shrink: 0; cursor: none;
+}
+.selector-hamburger span {
+  display: block; width: 15px; height: 1.5px;
+  background: #0a0a0a; border-radius: 1px;
+  transition: opacity 0.15s ease;
+}
+.selector-card:hover .selector-hamburger span { opacity: 0.7; }
+
+.selector-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 280; opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.selector-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.selector-dropdown {
+  position: fixed; top: 22px; right: 22px;
+  width: 280px; max-height: min(80vh, 560px);
+  display: flex; flex-direction: column;
+  background: var(--cream);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 290; overflow: hidden;
+  opacity: 0;
+  transform: scale(0.96) translateY(-6px);
+  transform-origin: top right;
+  pointer-events: none; visibility: hidden;
+  transition: opacity 0.22s ease-out, transform 0.22s cubic-bezier(0.25,0.46,0.45,0.94), visibility 0.22s ease-out;
+}
+.selector-dropdown.open {
+  opacity: 1; transform: scale(1) translateY(0);
+  pointer-events: auto; visibility: visible;
+}
+.selector-menu-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+.selector-close {
+  appearance: none;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: transparent;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; line-height: 1;
+  cursor: none; color: rgba(0,0,0,0.5);
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.selector-close:hover { color: #0a0a0a; border-color: rgba(0,0,0,0.3); background: rgba(0,0,0,0.04); }
+
+.selector-menu-title {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 2.4px;
+  text-transform: lowercase;
+  color: #0a0a0a;
+}
+
+.selector-items {
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: 4px 0 6px;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.selector-items::-webkit-scrollbar { display: none; }
+
+a.selector-item { display: block; text-decoration: none; color: inherit; }
+.selector-item {
+  position: relative;
+  padding: 14px 22px;
+  font-family: var(--font-sans);
+  cursor: none;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  overflow: hidden;
+}
+.selector-item::before {
+  content: ''; position: absolute; inset: 0;
+  background: #0a0a0a;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.selector-item:hover::before { transform: translateX(0); }
+.selector-item:hover .selector-item-num,
+.selector-item:hover .selector-item-title { color: var(--cream); }
+.selector-dropdown.open .selector-item {
+  animation: menuItemIn 0.38s cubic-bezier(0.2,0.7,0.2,1) forwards;
+  animation-delay: calc(60ms + (var(--stagger,0) * 40ms));
+}
+.selector-item.active .selector-item-num   { color: var(--red); }
+.selector-item.active .selector-item-title { opacity: 1; }
+
+.selector-item-num {
+  display: block; font-size: 8px; letter-spacing: 1.4px;
+  color: rgba(0,0,0,0.3); text-transform: uppercase;
+  margin-bottom: 5px; position: relative;
+  transition: color 0.15s ease;
+}
+.selector-item-title {
+  font-size: 17px; color: #0a0a0a;
+  font-weight: 400; letter-spacing: 2.2px;
+  text-transform: uppercase;
+  position: relative; transition: color 0.15s ease;
+}
+
+/* ============================================================
+   PAGE LAYOUT — sidebar + grid
+   ============================================================ */
+#gallery-wrapper {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  padding-top: 96px;
+  padding-bottom: 80px;
+  opacity: 0;
+  animation: fadeIn 0.55s ease 0.1s forwards;
+}
+
+/* ============================================================
+   LEFT SIDEBAR — role filters
+   ============================================================ */
+#role-sidebar {
+  position: sticky;
+  top: 96px;
+  height: calc(100vh - 96px);
+  padding: 42px 24px 42px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow: hidden;
+}
+
+.role-label {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 2.8px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.28);
+  margin-bottom: 20px;
+  animation: fadeUp 0.5s ease 0.3s both;
+}
+
+.role-body {
+  display: flex;
+  flex-direction: row;
+  gap: 18px;
+  flex: 1;
+  min-height: 0;
+}
+
+.role-line {
+  width: 1px;
+  height: 100%;
+  background: rgba(250, 247, 239, 0.09);
+  flex-shrink: 0;
+  transform-origin: top;
+  transform: scaleY(0);
+  animation: lineGrow 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s forwards;
+}
+
+.role-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Role button — each one is a filter trigger */
+.role-btn {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.22);
+  background: none;
+  border: none;
+  padding: 9px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: none;
+  text-align: left;
+  transition: color 0.25s ease;
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeUp 0.4s ease both;
+  position: relative;
+}
+.role-btn:hover { color: rgba(250, 247, 239, 0.6); }
+.role-btn.active { color: rgba(250, 247, 239, 0.95); }
+
+/* Red dot indicator — only visible when role is active */
+.role-btn-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.role-btn.active .role-btn-dot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Count badge */
+.role-btn-count {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  color: rgba(250, 247, 239, 0.18);
+  transition: color 0.25s ease;
+  margin-left: auto;
+  padding-right: 4px;
+}
+.role-btn.active .role-btn-count { color: rgba(250, 247, 239, 0.35); }
+
+/* ============================================================
+   GALLERY GRID — 2 columns
+   ============================================================ */
+#gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 0;
+  row-gap: 0;
+  padding: 42px 48px 20px 0;
+  align-content: start;
+  transition: opacity 0.22s ease;
+}
+
+#gallery-grid.is-filtering {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Empty state — shown when no results */
+#empty-state {
+  grid-column: 1 / -1;
+  padding: 60px 0 40px;
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+#empty-state.visible { display: flex; }
+.empty-state-label {
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.2);
+}
+
+/* ============================================================
+   GALLERY CARD
+   ============================================================ */
+.gallery-card {
+  display: flex;
+  flex-direction: row;
+  gap: 22px;
+  align-items: flex-start;
+  padding: 28px 28px 28px 0;
+  cursor: none;
+  text-decoration: none;
+  color: inherit;
+
+  /* Entrance animation — triggered by IntersectionObserver */
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity  0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gallery-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hidden state (filtered out) */
+.gallery-card.card-hidden {
+  display: none;
+}
+
+/* Thumbnail */
+.card-thumb {
+  width: 172px;
+  height: 172px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    #0f0f0f 0%,
+    #1a1a1a 40%,
+    #0f0f0f 80%
+  );
+  background-size: 600px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+.card-thumb.loaded {
+  animation: none;
+  background: #0f0f0f;
+}
+
+.card-thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.card-thumb img.loaded { opacity: 1; }
+.gallery-card:hover .card-thumb img { transform: scale(1.04); }
+
+/* Play-ring overlay */
+.card-thumb-overlay {
+  position: absolute; inset: 0;
+  z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+  border-radius: 10px;
+}
+.gallery-card:hover .card-thumb-overlay { background: rgba(0, 0, 0, 0.22); }
+
+.card-play-ring {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(250, 247, 239, 0.55);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gallery-card:hover .card-play-ring { opacity: 1; transform: scale(1); }
+.card-play-arrow {
+  width: 0; height: 0;
+  border-top: 5.5px solid transparent;
+  border-bottom: 5.5px solid transparent;
+  border-left: 10px solid rgba(250, 247, 239, 0.88);
+  margin-left: 3px;
+}
+
+/* Card info text */
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 7px;
+  min-width: 0;
+  padding-top: 6px;
+}
+
+.card-title {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cream);
+  line-height: 1.22;
+  letter-spacing: -0.1px;
+  transition: color 0.2s ease;
+}
+.gallery-card:hover .card-title { color: #fff; }
+
+.card-desc {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(250, 247, 239, 0.38);
+  letter-spacing: 0.1px;
+}
+
+.card-role-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.card-role-pill {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.22);
+  border: 1px solid rgba(250, 247, 239, 0.1);
+  border-radius: 3px;
+  padding: 3px 6px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.gallery-card:hover .card-role-pill {
+  color: rgba(250, 247, 239, 0.45);
+  border-color: rgba(250, 247, 239, 0.22);
+}
+
+/* Highlight the pill matching the active role */
+.card-role-pill.role-match {
+  color: rgba(255, 15, 0, 0.7);
+  border-color: rgba(255, 15, 0, 0.3);
+}
+
+.card-link {
+  margin-top: 6px;
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: color 0.22s ease;
+}
+.gallery-card:hover .card-link { color: rgba(250, 247, 239, 0.65); }
+
+.card-link-arrow {
+  display: inline-block;
+  transition: transform 0.22s ease;
+}
+.gallery-card:hover .card-link-arrow { transform: translateX(4px); }
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-track {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: rgba(250, 247, 239, 0.05);
+  z-index: 150;
+}
+#progress-fill {
+  height: 100%;
+  background: rgba(250, 247, 239, 0.18);
+  width: 0%;
+  transition: width 0.06s linear;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px) {
+  #gallery-wrapper { grid-template-columns: 210px 1fr; }
+  .card-thumb { width: 148px; height: 148px; }
+  .card-title { font-size: 13px; }
+}
+
+@media (max-width: 820px) {
+  #gallery-wrapper {
+    grid-template-columns: 150px 1fr;
+    padding-top: 80px;
+  }
+  #role-sidebar {
+    padding-left: 20px;
+    padding-right: 16px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .role-body { gap: 10px; }
+  #gallery-grid {
+    grid-template-columns: 1fr;
+    padding: 28px 20px 20px 0;
+    min-width: 0;
+  }
+  .role-btn {
+    letter-spacing: 1px;
+    font-size: 8px;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.4;
+  }
+  .role-btn-dot { margin-top: 4px; flex-shrink: 0; }
+  .role-btn-label { min-width: 0; white-space: normal; overflow-wrap: break-word; }
+  .role-btn-count { display: none; }
+  .card-thumb { width: 130px; height: 130px; }
+  .card-title { font-size: 13px; }
+  .card-desc  { font-size: 11px; }
+}
+
+@media (max-width: 560px) {
+  #gallery-wrapper {
+    grid-template-columns: 1fr;
+    padding-top: 76px;
+  }
+  #role-sidebar { display: none; }
+  #gallery-grid { padding: 24px 20px 20px 20px; }
+  .gallery-card { gap: 16px; padding: 22px 0; }
+  .card-thumb { width: 110px; height: 110px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor"></div>
+
+<!-- Top fade -->
+<div id="top-fade"></div>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo" aria-label="Home">
+    <img src="assets/images/Asset 2 - white.png" alt="">
+  </a>
+  <div class="nav-right">
+    <div id="film-selector">
+      <div class="selector-card" id="selector-toggle" role="button" tabindex="0" aria-label="Open navigation menu">
+        <div class="selector-top">
+          <div class="selector-left">
+            <span class="selector-dot"></span>
+            <div class="selector-title-wrap">
+              <span class="selector-title" id="selector-title">Gallery</span>
+            </div>
+            <span class="selector-chevron">
+              <svg viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"/></svg>
+            </span>
+          </div>
+          <div class="selector-pill-divider"></div>
+          <div class="selector-hamburger">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+      <div class="selector-backdrop" id="selector-backdrop" aria-hidden="true"></div>
+      <div class="selector-dropdown" id="selector-dropdown" aria-label="Navigation menu">
+        <div class="selector-menu-header">
+          <div class="selector-menu-title">rayul</div>
+          <button class="selector-close" id="selector-close" aria-label="Close menu">×</button>
+        </div>
+        <div class="selector-items">
+          <a href="index.html" class="selector-item" data-page="work" style="--stagger:0">
+
+            <div class="selector-item-title">Work</div>
+          </a>
+          <a href="about.html" class="selector-item" data-page="about" style="--stagger:1">
+
+            <div class="selector-item-title">About</div>
+          </a>
+          <a href="gallery.html" class="selector-item active" data-page="gallery" style="--stagger:2">
+
+            <div class="selector-item-title">Gallery</div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     GALLERY
+     ============================================================ -->
+<div id="gallery-wrapper">
+
+  <!-- LEFT: role filter sidebar -->
+  <aside id="role-sidebar" aria-label="Filter by role">
+    <span class="role-label">Roles</span>
+    <div class="role-body">
+      <div class="role-line" aria-hidden="true"></div>
+      <nav class="role-nav" id="role-nav" aria-label="Role filters"></nav>
+    </div>
+  </aside>
+
+  <!-- RIGHT: 2-column card grid -->
+  <main id="gallery-grid" aria-label="Portfolio gallery">
+    <div id="empty-state" aria-live="polite">
+      <span class="empty-state-label">More projects coming soon</span>
+    </div>
+  </main>
+
+</div>
+
+<!-- Scroll progress -->
+<div id="progress-track"><div id="progress-fill"></div></div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   PROJECTS DATA
+   --------------------------------------------------------
+   roles: array — one project can appear in multiple categories.
+   Roles available: 'VFX', 'EDIT', 'CINEMATOGRAPHY', 'COLOUR GRADING'
+
+   YouTube thumbnail: https://img.youtube.com/vi/{youtubeId}/maxresdefault.jpg
+   ============================================================ */
+const PROJECTS = [
+
+  /* ── 2026 ──────────────────────────────────── */
+  {
+    id: 'vimeo-girl-dont-cry-live',
+    vimeoId: '1189542781',
+    vimeoUrl: 'https://vimeo.com/1189542781',
+    title: 'Livingthing — Girl Don\'t Cry Live',
+    desc: 'Live Session',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2026',
+  },
+
+  /* ── DRAKE — pinned 2nd + 4th ──────────────── */
+  {
+    id: 'project-yt-1',
+    youtubeId: 'VEW9E1EIQ1M',
+    youtubeUrl: 'https://www.youtube.com/watch?v=VEW9E1EIQ1M',
+    title: 'Drake — 8am in Charlotte',
+    desc: 'Music Video',
+    roles: ['VFX'],
+    year: '2023',
+  },
+
+  /* ── 2025 ──────────────────────────────────── */
+  {
+    id: 'vimeo-vitaly-oblivion-s25',
+    vimeoId: '1086260829',
+    vimeoUrl: 'https://vimeo.com/1086260829',
+    title: 'Vitaly — Oblivion S25',
+    desc: 'Fashion Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2025',
+  },
+
+  /* ── DRAKE continued ────────────────────────── */
+  {
+    id: 'project-yt-2',
+    youtubeId: '0bxhAxRmrJw',
+    youtubeUrl: 'https://www.youtube.com/watch?v=0bxhAxRmrJw',
+    title: 'Drake — Polar Opposites',
+    desc: 'Music Video',
+    roles: ['VFX'],
+    year: '2023',
+  },
+
+  /* ── 2025 (continued) ──────────────────────── */
+  {
+    id: 'vimeo-saint-andre-grimoire',
+    vimeoId: '1180380678',
+    vimeoUrl: 'https://vimeo.com/1180380678',
+    title: 'Saint Andre — Grimoire',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'COLOUR GRADING'],
+    year: '2025',
+  },
+  {
+    id: 'vimeo-4ye-holiday-s25',
+    vimeoId: '1152323624',
+    vimeoUrl: 'https://vimeo.com/1152323624',
+    title: '4YE — Holiday Campaign S25',
+    desc: 'Fashion Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2025',
+  },
+  {
+    id: 'vimeo-spencer-badu-s25',
+    vimeoId: '1068478051',
+    vimeoUrl: 'https://vimeo.com/1068478051',
+    title: 'Spencer Badu — S25',
+    desc: 'Fashion Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2025',
+  },
+  {
+    id: 'project-yt-3',
+    youtubeId: 'Y4SNF4iRMJA',
+    youtubeUrl: 'https://www.youtube.com/watch?v=Y4SNF4iRMJA',
+    title: 'Poova Vaa — Vidusan, Supaveen',
+    desc: 'Music Video',
+    roles: ['CINEMATOGRAPHY'],
+    year: '2025',
+  },
+  {
+    id: 'project-yt-4',
+    youtubeId: '',
+    youtubeUrl: '#',
+    localThumb: 'assets/images/malik-360.jpg',
+    title: 'MAL1K — 360',
+    desc: 'Music Video',
+    roles: ['CINEMATOGRAPHY'],
+    year: '2025',
+  },
+  {
+    id: 'project-yt-5',
+    youtubeId: 'SJzhhWdJ5kw',
+    youtubeUrl: 'https://www.youtube.com/watch?v=SJzhhWdJ5kw',
+    localThumb: 'assets/images/diljit-ghost.jpg',
+    title: 'Diljit Dosanjh — Ghost',
+    desc: 'Music Video',
+    roles: ['COLOUR GRADING'],
+    year: '2025',
+  },
+  {
+    id: 'project-yt-6',
+    youtubeId: 'iUcrHEb3YvE',
+    youtubeUrl: 'https://www.youtube.com/watch?v=iUcrHEb3YvE',
+    localThumb: 'assets/images/tesher-thumbnail.png',
+    title: 'Tesher — Ve Mundeya',
+    desc: 'Music Video',
+    roles: ['VFX'],
+    year: '2025',
+  },
+
+  /* ── 2024 ──────────────────────────────────── */
+  {
+    id: 'vimeo-gray-hawken-golden-state',
+    vimeoId: '1072859381',
+    vimeoUrl: 'https://vimeo.com/1072859381',
+    title: 'Gray Hawken — Golden State',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2024',
+  },
+  {
+    id: 'vimeo-chris-larocca-ladybug',
+    vimeoId: '1072858613',
+    vimeoUrl: 'https://vimeo.com/1072858613',
+    title: 'Chris Larocca — Ladybug',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2024',
+  },
+  {
+    id: 'vimeo-lafrance-s24-two-brothers',
+    vimeoId: '1019260930',
+    vimeoUrl: 'https://vimeo.com/1019260930',
+    title: 'Lafrance S24 — Two Brothers',
+    desc: 'Fashion Film',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2024',
+  },
+  {
+    id: 'vimeo-cherry-blu-shirt-never-fit',
+    vimeoId: '1033728951',
+    vimeoUrl: 'https://vimeo.com/1033728951',
+    title: 'Cherry Blu — Shirt Never Fit',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'EDIT', 'VFX'],
+    year: '2024',
+  },
+  {
+    id: 'vimeo-adroc-after-rest',
+    vimeoId: '928892869',
+    vimeoUrl: 'https://vimeo.com/928892869',
+    title: 'Adroc — After Rest',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2024',
+  },
+  {
+    id: 'vimeo-jiwoo-afterimage',
+    vimeoId: '936429043',
+    vimeoUrl: 'https://vimeo.com/936429043',
+    title: 'Jiwoo — Afterimage',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2024',
+  },
+
+  /* ── 2023 ──────────────────────────────────── */
+  {
+    id: 'vimeo-lou-val-in-ur-motions',
+    vimeoId: '907972764',
+    vimeoUrl: 'https://vimeo.com/907972764',
+    title: 'Lou Val — In Ur Motions',
+    desc: 'Music Video',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2023',
+  },
+  {
+    id: 'vimeo-amaal-nuux-the-middle',
+    vimeoId: '838913497',
+    vimeoUrl: 'https://vimeo.com/838913497',
+    title: 'Amaal Nuux — The Middle',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2023',
+  },
+  {
+    id: 'vimeo-spencer-badu-naso-s23',
+    vimeoId: '840272063',
+    vimeoUrl: 'https://vimeo.com/840272063',
+    title: 'Spencer Badu × Naso — S23 Bag Campaign',
+    desc: 'Fashion Film',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2023',
+  },
+  {
+    id: 'vimeo-spencer-badu-s23',
+    vimeoId: '795354913',
+    vimeoUrl: 'https://vimeo.com/795354913',
+    title: 'Spencer Badu — S23',
+    desc: 'Fashion Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2023',
+  },
+  {
+    id: 'vimeo-vitaly-bpm-s23',
+    vimeoId: '855555364',
+    vimeoUrl: 'https://vimeo.com/855555364',
+    title: 'Vitaly — BPM S23',
+    desc: 'Fashion Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2023',
+  },
+
+  /* ── 2022 ──────────────────────────────────── */
+  {
+    id: 'vimeo-concorde-ep-trailer',
+    vimeoId: '790929123',
+    vimeoUrl: 'https://vimeo.com/790929123',
+    title: 'Concorde — EP Trailer',
+    desc: 'EP Trailer',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-mileena-eve-2',
+    vimeoId: '788843088',
+    vimeoUrl: 'https://vimeo.com/788843088',
+    title: 'Mileena — EVE 2',
+    desc: 'Music Video',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-2-sides-kavale',
+    vimeoId: '786423131',
+    vimeoUrl: 'https://vimeo.com/786423131',
+    title: '2 Sides — Kavale',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-adroc-kindred',
+    vimeoId: '755993448',
+    vimeoUrl: 'https://vimeo.com/755993448',
+    title: 'Adroc — Kindred',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'VFX', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-wizkid-rolling-loud',
+    vimeoId: '749777779',
+    vimeoUrl: 'https://vimeo.com/749777779',
+    title: 'Wizkid — Rolling Loud Toronto',
+    desc: 'Concert Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-ethereal-toussaint',
+    vimeoId: '740914790',
+    vimeoUrl: 'https://vimeo.com/740914790',
+    title: 'Ethereal — Toussaint',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-seago-lawn-visualizer',
+    vimeoId: '711863471',
+    vimeoUrl: 'https://vimeo.com/711863471',
+    title: 'Seago — Lawn Visualizer',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-radio-silence-stefan-ensea',
+    vimeoId: '694750305',
+    vimeoUrl: 'https://vimeo.com/694750305',
+    title: 'Radio Silence — Stefan, Ensea',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-baduhaus-s22',
+    vimeoId: '703899499',
+    vimeoUrl: 'https://vimeo.com/703899499',
+    title: 'BADUHAUS — S22',
+    desc: 'Fashion Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+  {
+    id: 'vimeo-fanatica-santi',
+    vimeoId: '804531057',
+    vimeoUrl: 'https://vimeo.com/804531057/01f6b218b8',
+    title: 'Fanatica — Santi',
+    desc: 'Music Video',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2022',
+  },
+
+  /* ── 2021 ──────────────────────────────────── */
+  {
+    id: 'vimeo-presence',
+    vimeoId: '512031476',
+    vimeoUrl: 'https://vimeo.com/512031476',
+    title: 'Presence',
+    desc: 'Short Film',
+    roles: ['DIRECTION', 'EDIT', 'COLOUR GRADING'],
+    year: '2021',
+  },
+
+  /* ── 2020 ──────────────────────────────────── */
+  {
+    id: 'vimeo-intermission-fashion-film',
+    vimeoId: '478246234',
+    vimeoUrl: 'https://vimeo.com/478246234',
+    title: 'Intermission — Fashion Film',
+    desc: 'Fashion Film',
+    roles: ['DIRECTION', 'CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2020',
+  },
+
+  /* ── 2019 ──────────────────────────────────── */
+  {
+    id: 'vimeo-vitaly-s19-campaign',
+    vimeoId: '375209102',
+    vimeoUrl: 'https://vimeo.com/375209102',
+    title: 'Vitaly — S19 Campaign',
+    desc: 'Fashion Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2019',
+  },
+
+  /* ── 2018 ──────────────────────────────────── */
+  {
+    id: 'vimeo-its-not-you-its-me',
+    vimeoId: '310207652',
+    vimeoUrl: 'https://vimeo.com/310207652',
+    title: 'its not you, its me.',
+    desc: 'Short Film',
+    roles: ['CINEMATOGRAPHY', 'EDIT', 'COLOUR GRADING'],
+    year: '2018',
+  },
+];
+
+/* All possible roles — order controls sidebar display order */
+const ALL_ROLES = ['DIRECTION', 'VFX', 'EDIT', 'CINEMATOGRAPHY', 'COLOUR GRADING'];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let activeRole = null; // null = show all
+
+/* ============================================================
+   CURSOR
+   ============================================================ */
+const cursorEl = document.getElementById('cursor');
+let mx = 0, my = 0, cx = 0, cy = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  if (!cursorEl.classList.contains('visible')) cursorEl.classList.add('visible');
+});
+
+(function animCursor() {
+  cx += (mx - cx) * 0.13;
+  cy += (my - cy) * 0.13;
+  cursorEl.style.left = cx + 'px';
+  cursorEl.style.top  = cy + 'px';
+  requestAnimationFrame(animCursor);
+})();
+
+function expandCursor()   { cursorEl.classList.add('expanded'); }
+function collapseCursor() { cursorEl.classList.remove('expanded'); }
+
+/* ============================================================
+   NAV SELECTOR
+   ============================================================ */
+const selectorToggle   = document.getElementById('selector-toggle');
+const selectorDropdown = document.getElementById('selector-dropdown');
+const selectorBackdrop = document.getElementById('selector-backdrop');
+const selectorClose    = document.getElementById('selector-close');
+
+const openMenu  = () => { selectorDropdown.classList.add('open');    selectorBackdrop.classList.add('open'); };
+const closeMenu = () => { selectorDropdown.classList.remove('open'); selectorBackdrop.classList.remove('open'); };
+
+selectorToggle.addEventListener('click', () => selectorDropdown.classList.contains('open') ? closeMenu() : openMenu());
+selectorBackdrop.addEventListener('click', closeMenu);
+selectorClose.addEventListener('click', closeMenu);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+[selectorToggle, ...document.querySelectorAll('a, button, [role="button"]')].forEach(el => {
+  el.addEventListener('mouseenter', expandCursor);
+  el.addEventListener('mouseleave', collapseCursor);
+});
+
+/* ============================================================
+   BUILD ROLE SIDEBAR
+   ============================================================ */
+const roleNav = document.getElementById('role-nav');
+
+ALL_ROLES.forEach((role, idx) => {
+  const count = PROJECTS.filter(p => p.roles.includes(role)).length;
+
+  const btn = document.createElement('button');
+  btn.className = 'role-btn';
+  btn.dataset.role = role;
+  btn.style.animationDelay = `${0.35 + idx * 0.06}s`;
+
+  btn.innerHTML = `
+    <span class="role-btn-dot" aria-hidden="true"></span>
+    <span class="role-btn-label">${role}</span>
+    <span class="role-btn-count">${count}</span>
+  `;
+
+  btn.addEventListener('click', () => {
+    // Toggle: clicking the active role deselects it (shows all)
+    setActiveRole(activeRole === role ? null : role);
+  });
+  btn.addEventListener('mouseenter', expandCursor);
+  btn.addEventListener('mouseleave', collapseCursor);
+
+  roleNav.appendChild(btn);
+});
+
+/* ============================================================
+   BUILD GALLERY GRID
+   ============================================================ */
+const grid       = document.getElementById('gallery-grid');
+const emptyState = document.getElementById('empty-state');
+
+PROJECTS.forEach((project, idx) => {
+  const card = document.createElement('a');
+  card.href      = project.vimeoUrl || project.youtubeUrl;
+  card.target    = '_blank';
+  card.rel       = 'noopener noreferrer';
+  card.className = 'gallery-card';
+  card.id        = project.id;
+  card.dataset.roles = project.roles.join(',');
+
+  const pillsHTML = project.roles
+    .map(r => `<span class="card-role-pill" data-role="${r}">${r}</span>`)
+    .join('');
+
+  card.innerHTML = `
+    <div class="card-thumb" id="thumb-${project.id}">
+      <img id="img-${project.id}" alt="${project.title}">
+      <div class="card-thumb-overlay">
+        <div class="card-play-ring">
+          <div class="card-play-arrow"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-info">
+      <span class="card-title">${project.title}</span>
+      <span class="card-desc">${project.desc} &middot; ${project.year}</span>
+      <div class="card-role-tag">${pillsHTML}</div>
+      <span class="card-link">Watch <span class="card-link-arrow">→</span></span>
+    </div>
+  `;
+
+  card.addEventListener('mouseenter', expandCursor);
+  card.addEventListener('mouseleave', collapseCursor);
+
+  grid.appendChild(card);
+});
+
+/* ============================================================
+   LOAD THUMBNAILS (local or YouTube)
+   ============================================================ */
+PROJECTS.forEach(project => {
+  const img   = document.getElementById(`img-${project.id}`);
+  const thumb = document.getElementById(`thumb-${project.id}`);
+  if (!img || !thumb) return;
+
+  // Use local thumbnail if provided
+  if (project.localThumb) {
+    img.onload = () => {
+      img.classList.add('loaded');
+      thumb.classList.add('loaded');
+    };
+    img.onerror = () => {
+      thumb.style.animation = 'none';
+      thumb.style.background = 'linear-gradient(140deg, #0d0d0d, #161616)';
+    };
+    img.src = project.localThumb;
+    return;
+  }
+
+  // Use Vimeo thumbnail — oEmbed API first (reliable, works for private/unlisted via hash),
+  // falls back to vumbnail.com, then dark gradient.
+  if (project.vimeoId) {
+    const onLoaded = () => { img.classList.add('loaded'); thumb.classList.add('loaded'); };
+    const onFailed = () => { thumb.style.animation = 'none'; thumb.style.background = 'linear-gradient(140deg, #0d0d0d, #161616)'; };
+
+    const tryVumbnail = () => {
+      img.onload  = onLoaded;
+      img.onerror = onFailed;
+      img.src = `https://vumbnail.com/${project.vimeoId}.jpg`;
+    };
+
+    fetch(`https://vimeo.com/api/oembed.json?url=${encodeURIComponent(project.vimeoUrl)}`)
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(data => {
+        if (data && data.thumbnail_url) {
+          img.onload  = onLoaded;
+          img.onerror = tryVumbnail;
+          img.src = data.thumbnail_url;
+        } else {
+          tryVumbnail();
+        }
+      })
+      .catch(tryVumbnail);
+    return;
+  }
+
+  // Try YouTube maxresdefault first, fall back to hqdefault
+  const maxRes = `https://img.youtube.com/vi/${project.youtubeId}/maxresdefault.jpg`;
+  const hqDef  = `https://img.youtube.com/vi/${project.youtubeId}/hqdefault.jpg`;
+
+  img.onload = () => {
+    // YouTube returns a 120×90 "no thumbnail" image for maxresdefault when unavailable
+    if (img.naturalWidth <= 120) {
+      img.src = hqDef;
+      return;
+    }
+    img.classList.add('loaded');
+    thumb.classList.add('loaded');
+  };
+
+  img.onerror = () => {
+    img.src = hqDef;
+    img.onerror = () => {
+      thumb.style.animation = 'none';
+      thumb.style.background = 'linear-gradient(140deg, #0d0d0d, #161616)';
+    };
+  };
+
+  img.src = maxRes;
+});
+
+/* ============================================================
+   ROLE FILTER LOGIC
+   ============================================================ */
+function setActiveRole(role) {
+  activeRole = role;
+
+  /* Update sidebar buttons */
+  document.querySelectorAll('.role-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.role === role);
+  });
+
+  /* Animate: fade grid out → swap cards → fade in */
+  grid.classList.add('is-filtering');
+
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.gallery-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const cardRoles = card.dataset.roles.split(',');
+      const matches = !role || cardRoles.includes(role);
+
+      if (matches) {
+        card.classList.remove('card-hidden');
+        visibleCount++;
+        // Ensure entrance animation replays for newly revealed cards
+        card.classList.remove('visible');
+        setTimeout(() => card.classList.add('visible'), 30);
+      } else {
+        card.classList.add('card-hidden');
+        card.classList.remove('visible');
+      }
+
+      /* Highlight matching role pills */
+      card.querySelectorAll('.card-role-pill').forEach(pill => {
+        pill.classList.toggle('role-match', role !== null && pill.dataset.role === role);
+      });
+    });
+
+    /* Show/hide empty state */
+    emptyState.classList.toggle('visible', visibleCount === 0);
+
+    grid.classList.remove('is-filtering');
+  }, 220);
+}
+
+/* ============================================================
+   INTERSECTION OBSERVER — card entrance animations
+   ============================================================ */
+const cardObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const card = entry.target;
+    const col  = Array.from(grid.children).indexOf(card) % 2;
+    setTimeout(() => card.classList.add('visible'), col * 90);
+    cardObserver.unobserve(card);
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.gallery-card').forEach(card => cardObserver.observe(card));
+
+/* ============================================================
+   SCROLL PROGRESS BAR
+   ============================================================ */
+const progressFill = document.getElementById('progress-fill');
+
+window.addEventListener('scroll', () => {
+  const maxScroll = document.body.scrollHeight - window.innerHeight;
+  const pct = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
+  progressFill.style.width = pct.toFixed(2) + '%';
+}, { passive: true });
+
+</script>
+</body>
+</html>

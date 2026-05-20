@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rayul — About</title>
+<link rel="icon" type="image/png" href="assets/images/favicon - white.png">
+<link rel="apple-touch-icon" href="assets/images/favicon - white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   RESET & ROOT
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: rgb(250, 247, 239);
+  --black: #000000;
+  --red:   rgb(255, 15, 0);
+  --gray:  rgb(66, 66, 66);
+  --font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes titleUp {
+  from { transform: translateY(110%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(0.75); opacity: 0.6; }
+}
+
+html { font-size: 16px; }
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ============================================================
+   GRAIN OVERLAY
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  background: var(--red);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+  transition: width 0.2s ease, height 0.2s ease;
+}
+#cursor.expanded { width: 28px; height: 28px; }
+
+/* ============================================================
+   TOP / BOTTOM GRADIENT FADES
+   ============================================================ */
+#top-fade, #bottom-fade {
+  position: fixed;
+  left: 0; width: 100%;
+  height: 180px;
+  pointer-events: none;
+  z-index: 20;
+}
+#top-fade    { top: 0;    background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, transparent 100%); }
+#bottom-fade { bottom: 0; background: linear-gradient(to top,   rgba(0,0,0,0.92) 0%, transparent 100%); }
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 32px 34px;
+}
+
+.nav-logo {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  line-height: 0;
+}
+.nav-logo img { height: 34px; width: auto; }
+
+.nav-link {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 1.8px;
+  color: var(--cream);
+  text-decoration: none;
+  text-transform: lowercase;
+  opacity: 0.9;
+  cursor: none;
+  transition: opacity 0.2s ease;
+}
+.nav-link:hover { opacity: 1; }
+
+/* ============================================================
+   MAIN LAYOUT — two columns, full viewport
+   ============================================================ */
+.about-wrap {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  display: flex;
+  gap: 0;
+  padding: 40px 61px 52px;
+}
+
+/* Left column: eyebrow top, name+bio+meta below */
+.col-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(32px, 5vh, 64px);
+  min-width: 0;
+}
+
+/* Right column: services top, contact card bottom */
+.col-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-left: 48px;
+  flex-shrink: 0;
+  width: 280px;
+}
+
+/* ============================================================
+   EYEBROW  (top-left)
+   ============================================================ */
+.eyebrow {
+  font-family: var(--font-serif);
+  font-size: 10px;
+  letter-spacing: 3.4px;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.6;
+  padding-top: 100px; /* clear nav */
+  animation: fadeUp 0.6s ease 0.3s both;
+}
+
+/* ============================================================
+   BOTTOM-LEFT STACK
+   ============================================================ */
+.about-bottom-left {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Name — mirrors .title-line from main page */
+.name-wrap { overflow: visible; }
+
+.name-line-wrap {
+  overflow: hidden;
+  display: block;
+  line-height: 0.85;
+}
+
+.name-line {
+  font-family: var(--font-sans);
+  font-size: clamp(58px, 6.8vw, 96px);
+  font-weight: 400;
+  letter-spacing: -2.7px;
+  line-height: 0.85;
+  text-transform: lowercase;
+  color: var(--cream);
+  display: block;
+  animation: titleUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.name-line:first-child { animation-delay: 0s; }
+.name-line:last-child  { animation-delay: 0.09s; }
+
+.name-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: var(--red);
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: super;
+  flex-shrink: 0;
+  animation: titleUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both,
+             dotPulse 2.8s ease-in-out 1.5s infinite;
+}
+
+/* Bio — Cormorant Garamond, matches .about-lead */
+.about-bio {
+  font-family: var(--font-serif);
+  font-size: clamp(17px, 1.35vw, 22px);
+  line-height: 1.65;
+  font-weight: 300;
+  color: rgba(250, 247, 239, 0.88);
+  max-width: 500px;
+  animation: fadeUp 0.6s ease 0.5s both;
+}
+
+/* Bio body paragraphs */
+.about-bio-body {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  color: rgba(250, 247, 239, 0.55);
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeUp 0.6s ease 0.55s both;
+}
+
+/* Social icons */
+.social-links {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  animation: fadeUp 0.6s ease 0.72s both;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(250, 247, 239, 0.45);
+  text-decoration: none;
+  cursor: none;
+  transition: color 0.2s ease;
+}
+.social-link:hover { color: rgba(250, 247, 239, 0.9); }
+.social-link svg { display: block; }
+
+/* Workshop button */
+.workshop-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(250, 247, 239, 0.25);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+  animation: fadeUp 0.6s ease 0.7s both;
+}
+.workshop-btn:hover { opacity: 1; border-color: rgba(250,247,239,0.55); }
+
+/* Meta row — identical to film slide .meta-row */
+.meta-row {
+  display: flex;
+  gap: 44px;
+  align-items: flex-start;
+  animation: fadeUp 0.55s ease 0.65s both;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.meta-label {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.55;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(250,247,239,0.25);
+  white-space: nowrap;
+}
+
+.meta-value {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  color: var(--cream);
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+/* ============================================================
+   SERVICES LIST  (top-right, like reference right column)
+   ============================================================ */
+.services-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 100px; /* align with eyebrow */
+  animation: fadeIn 0.6s ease 0.4s both;
+}
+
+.service-item {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.45);
+  text-align: right;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   CONTACT CARD  (bottom-right, like reference team card)
+   ============================================================ */
+.contact-card {
+  background: rgba(250, 247, 239, 0.96);
+  border-radius: 16px;
+  padding: 18px 20px 20px;
+  width: 220px;
+  color: var(--black);
+  animation: fadeUp 0.6s ease 0.75s both;
+}
+
+.contact-card-label {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+  margin-bottom: 8px;
+}
+
+.contact-card-name {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--black);
+  letter-spacing: 0.2px;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+
+.contact-card-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: none;
+  transition: opacity 0.2s ease;
+}
+.contact-card-btn:hover { opacity: 0.75; }
+
+/* ============================================================
+   MOBILE  ≤ 768px
+   ============================================================ */
+@media (max-width: 768px) {
+  body { height: auto; overflow: auto; }
+
+  #nav { padding: 18px 20px; }
+  .nav-logo img { height: 20px; }
+  #top-fade, #bottom-fade { height: 110px; }
+
+  .about-wrap {
+    flex-direction: column;
+    height: auto;
+    padding: 28px 22px 52px;
+    gap: 40px;
+  }
+
+  .col-right {
+    width: 100%;
+    padding-left: 0;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .eyebrow { padding-top: 90px; }
+
+  .services-list {
+    padding-top: 0;
+    align-items: flex-start;
+  }
+  .service-item { text-align: left; }
+
+  .name-line {
+    font-size: clamp(50px, 12.5vw, 78px);
+    letter-spacing: -1.5px;
+  }
+
+  .meta-row { gap: 20px; flex-wrap: wrap; }
+
+  .contact-card { width: auto; min-width: 190px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+
+<!-- Fades -->
+<div id="top-fade"></div>
+<div id="bottom-fade"></div>
+
+<!-- Navigation -->
+<nav id="nav" aria-label="Primary">
+  <a href="index.html" class="nav-logo" aria-label="Home">
+    <img src="assets/images/Asset 2 - white.png" alt="">
+  </a>
+  <a href="index.html" class="nav-link">work</a>
+</nav>
+
+<!-- Main -->
+<main class="about-wrap">
+
+  <!-- LEFT COLUMN -->
+  <div class="col-left">
+
+    <!-- Eyebrow — top of left column -->
+    <span class="eyebrow">Director</span>
+
+    <!-- Bottom stack: name, bio, meta -->
+    <div class="about-bottom-left">
+
+      <div class="name-wrap">
+        <div class="name-line-wrap" style="display:flex;align-items:flex-start;">
+          <span class="name-line">rayul</span><span class="name-dot"></span>
+        </div>
+      </div>
+
+      <p class="about-bio">
+        I'm a director and editor specializing in cinematic, fashion driven visuals with a strong narrative focus.
+      </p>
+
+      <div class="about-bio-body">
+        <p>Over the past few years, I've collaborated with artists and brands including Spencer Badu, Vitaly, Wizkid, Drake, Lou Val, and the University of Toronto, working across campaigns, editorial, and narrative projects.</p>
+        <p>My short film Presence was recognized at several festivals, including winning "Best First Time Filmmaker" at the Montreal Independent Film Festival.</p>
+        <p>Alongside my creative work, I also teach and share my process, with a focus on helping others better understand visual storytelling and production.</p>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-item">
+          <span class="meta-label">Based in</span>
+          <span class="meta-value">Toronto</span>
+        </div>
+      </div>
+
+      <div class="social-links">
+        <!-- Vimeo -->
+        <a href="https://vimeo.com/rayul" class="social-link" aria-label="Vimeo" target="_blank" rel="noopener noreferrer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23 7.1c-.1 2.2-1.6 5.3-4.6 9.1C15.3 20.1 12.7 22 10.5 22c-1.4 0-2.5-1.3-3.5-3.8L5.3 12C4.6 9.5 3.8 8.2 3 8.2c-.2 0-.8.4-1.9 1.1L0 8c1.2-1.1 2.4-2.1 3.6-3.2C5.2 3.4 6.4 2.9 7.2 2.8c1.9-.2 3.1 1.1 3.5 3.9.5 3 .8 4.8 1 5.6.5 2.4 1.1 3.6 1.8 3.6.5 0 1.3-.8 2.3-2.4 1-1.6 1.6-2.8 1.6-3.7 0-1.7-.7-2.5-2-2.5-.7 0-1.4.2-2.1.5 1.4-4.6 4.1-6.8 8-6.6C23.4 1.4 23.1 3.9 23 7.1z" fill="currentColor"/>
+          </svg>
+        </a>
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/rayul.vfx/" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+            <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+          </svg>
+        </a>
+        <!-- Soundcloud -->
+        <a href="https://soundcloud.com/rayul-vfx" class="social-link" aria-label="Soundcloud" target="_blank" rel="noopener noreferrer">
+          <svg width="22" height="20" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 11.5c0 1.4 1.1 2.5 2.5 2.5H17c2.2 0 4-1.8 4-4 0-2-1.5-3.7-3.4-4-.2-3-2.6-5.4-5.6-5.4-2 0-3.7 1-4.7 2.6-.4-.2-.8-.2-1.3-.2-1.9 0-3.5 1.5-3.5 3.4 0 .2 0 .4.1.6C1.1 7.6 0 9.4 0 11.5z" fill="currentColor"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="col-right">
+
+    <!-- Services — top of right column -->
+    <div class="services-list" aria-label="Disciplines">
+      <span class="service-item">Colour Grading</span>
+      <span class="service-item">Cinematography</span>
+      <span class="service-item">Direction</span>
+      <span class="service-item">Editing</span>
+    </div>
+
+    <!-- Contact card — bottom of right column -->
+    <div class="contact-card">
+      <div class="contact-card-label">Open to work</div>
+      <div class="contact-card-name">rayul</div>
+      <a href="mailto:" class="contact-card-btn">Get in touch &rarr;</a>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+const cursor = document.getElementById('cursor');
+let mx = 0, my = 0, cx = 0, cy = 0;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function tick() {
+  cx += (mx - cx) * 0.13;
+  cy += (my - cy) * 0.13;
+  cursor.style.left = cx + 'px';
+  cursor.style.top  = cy + 'px';
+  requestAnimationFrame(tick);
+})();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('expanded'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('expanded'));
+});
+</script>
+
+</body>
+</html>

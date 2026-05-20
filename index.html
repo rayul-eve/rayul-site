@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rayul</title>
+<link rel="icon" type="image/png" href="assets/images/favicon - white.png">
+<link rel="apple-touch-icon" href="assets/images/favicon - white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&display=swap" rel="stylesheet">
+<style>
+
+/* ============================================================
+   RESET & ROOT
+   ============================================================ */
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+:root {
+  --cream: rgb(250, 247, 239);
+  --black: #000000;
+  --red:   rgb(255, 15, 0);
+  --gray:  rgb(66, 66, 66);
+  --dark:  rgb(17, 17, 17);
+  --font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes titleUp {
+  from { transform: translateY(110%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes menuItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.45; transform: translateY(0); }
+  50%       { opacity: 1;    transform: translateY(4px); }
+}
+
+@keyframes scrollFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+
+@keyframes titleRollOutUp {
+  from { transform: translateY(0);     opacity: 1; }
+  to   { transform: translateY(-110%); opacity: 0; }
+}
+@keyframes titleRollOutDown {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(110%); opacity: 0; }
+}
+@keyframes titleRollInUp {
+  from { transform: translateY(110%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes titleRollInDown {
+  from { transform: translateY(-110%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+html { font-size: 16px; }
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  cursor: none;
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ============================================================
+   GRAIN OVERLAY
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  background: var(--red);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+  transition: width 0.2s ease, height 0.2s ease;
+}
+
+#cursor.expanded {
+  width: 28px;
+  height: 28px;
+}
+
+/* ============================================================
+   TOP / BOTTOM GRADIENT FADES
+   ============================================================ */
+#top-fade, #bottom-fade {
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  pointer-events: none;
+  z-index: 20;
+}
+#top-fade {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, transparent 100%);
+}
+#bottom-fade {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 100%);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 32px 34px;
+}
+
+.nav-logo {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+  line-height: 0;
+}
+
+.nav-logo img {
+  height: 34px;
+  width: auto;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ============================================================
+   FILM SELECTOR CARD
+   ============================================================ */
+#film-selector {
+  position: relative;
+}
+
+.selector-card {
+  background: rgba(250, 247, 239, 0.97);
+  width: auto;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  cursor: none;
+  user-select: none;
+  backdrop-filter: blur(12px);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+
+.selector-card:hover {
+  box-shadow: 0 6px 28px rgba(0,0,0,0.26);
+  border-color: rgba(0,0,0,0.18);
+}
+
+.selector-top {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 0;
+  height: 38px;
+}
+
+/* Left section: dot + title + chevron */
+.selector-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 12px 0 13px;
+  flex: 1;
+}
+
+.selector-title-wrap {
+  overflow: hidden;
+}
+
+.selector-title {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  line-height: 1;
+  color: #0a0a0a;
+  display: block;
+  will-change: transform, opacity;
+  white-space: nowrap;
+}
+
+.selector-title.roll-exit-up   { animation: titleRollOutUp   0.18s ease-in  forwards; }
+.selector-title.roll-exit-down { animation: titleRollOutDown 0.18s ease-in  forwards; }
+.selector-title.roll-enter-up  { animation: titleRollInUp    0.22s ease-out forwards; }
+.selector-title.roll-enter-down{ animation: titleRollInDown  0.22s ease-out forwards; }
+
+.selector-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+  display: block;
+  transition: transform 0.2s ease;
+  animation: dotBlink 2.4s ease-in-out infinite;
+}
+
+.selector-card.open .selector-dot {
+  transform: scale(1.3);
+}
+
+/* Chevron icon */
+.selector-chevron {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0.45;
+  margin-left: 4px;
+}
+.selector-chevron svg {
+  width: 9px;
+  height: 9px;
+  stroke: #0a0a0a;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Vertical divider */
+.selector-pill-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+/* Hamburger right section */
+.selector-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 40px;
+  height: 38px;
+  flex-shrink: 0;
+  cursor: none;
+}
+.selector-hamburger span {
+  display: block;
+  width: 15px;
+  height: 1.5px;
+  background: #0a0a0a;
+  border-radius: 1px;
+  transition: opacity 0.15s ease;
+}
+.selector-card:hover .selector-hamburger span {
+  opacity: 0.7;
+}
+
+.selector-divider {
+  display: none;
+}
+
+.selector-meta {
+  display: none;
+}
+
+.selector-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 280;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.selector-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.selector-dropdown {
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  width: 280px;
+  max-height: min(80vh, 560px);
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 290;
+  overflow: hidden;
+  opacity: 0;
+  transform: scale(0.96) translateY(-6px);
+  transform-origin: top right;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.22s ease-out, transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.22s ease-out;
+}
+
+.selector-dropdown.open {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.selector-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.07);
+}
+
+.selector-close {
+  appearance: none;
+  border: 1px solid rgba(0,0,0,0.14);
+  background: transparent;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  cursor: none;
+  color: rgba(0,0,0,0.5);
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.selector-close:hover {
+  color: #0a0a0a;
+  border-color: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.04);
+}
+
+.selector-menu-title {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 2.4px;
+  text-transform: lowercase;
+  color: #0a0a0a;
+}
+
+.selector-items {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 0 6px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.selector-items::-webkit-scrollbar {
+  display: none;
+}
+
+a.selector-item {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.selector-item {
+  position: relative;
+  padding: 14px 22px;
+  font-family: var(--font-sans);
+  cursor: none;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(10px);
+  will-change: opacity, transform;
+  overflow: hidden;
+}
+
+.selector-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #0a0a0a;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.selector-item:hover::before {
+  transform: translateX(0);
+}
+
+.selector-item:hover .selector-item-num,
+.selector-item:hover .selector-item-title {
+  color: var(--cream);
+}
+
+.selector-dropdown.open .selector-item {
+  animation: menuItemIn 0.38s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  animation-delay: calc(60ms + (var(--stagger, 0) * 40ms));
+}
+
+.selector-item.active .selector-item-title {
+  opacity: 1;
+}
+
+.selector-item.active .selector-item-num {
+  color: var(--red);
+}
+
+/* Number prefix */
+.selector-item-num {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  color: rgba(0,0,0,0.3);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+  position: relative;
+  transition: color 0.15s ease;
+  font-family: var(--font-sans);
+}
+
+.selector-item-title {
+  font-size: 17px;
+  color: #0a0a0a;
+  font-weight: 400;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  position: relative;
+  transition: color 0.15s ease;
+}
+
+.selector-item-subtitle {
+  margin-top: 3px;
+  font-size: 9px;
+  color: rgba(0,0,0,0.35);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.about-text {
+  position: fixed;
+  bottom: 32px;
+  right: 34px;
+  z-index: 150;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--cream);
+  text-decoration: none;
+  text-transform: lowercase;
+  opacity: 0.55;
+  cursor: none;
+  transition: opacity 0.2s ease;
+}
+
+.about-text:hover {
+  opacity: 1;
+}
+
+/* ============================================================
+   SLIDES CONTAINER
+   ============================================================ */
+#slides-container {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+#slides-container::-webkit-scrollbar { display: none; }
+#slides-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ============================================================
+   INDIVIDUAL SLIDE
+   ============================================================ */
+.slide {
+  position: relative;
+  height: 100vh;
+  scroll-snap-align: start;
+  overflow: hidden;
+}
+
+/* ============================================================
+   VIDEO BACKGROUND
+   ============================================================ */
+.video-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.video-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.38);
+  z-index: 1;
+}
+
+.video-bg iframe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw;
+  min-height: 100%;
+  min-width: 177.78vh;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border: none;
+}
+
+/* ============================================================
+   SLIDE CONTENT OVERLAY
+   ============================================================ */
+.slide-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 61px 52px;
+}
+
+/* ============================================================
+   LEFT COLUMN
+   ============================================================ */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  max-width: 68%;
+  min-height: 0;
+}
+
+/* Bottom info */
+.bottom-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 0;
+  margin-top: auto;
+}
+
+.eyebrow {
+  font-family: var(--font-serif);
+  font-size: 10px;
+  letter-spacing: 3.4px;
+  text-transform: uppercase;
+  color: var(--cream);
+  animation: fadeUp 0.6s ease 0.3s both;
+  animation-play-state: paused;
+}
+.slide.is-active .eyebrow { animation-play-state: running; }
+
+/* Title lines */
+.title-wrap { overflow: visible; }
+
+.title-line-wrap {
+  overflow: hidden;
+  display: block;
+  line-height: 0.85;
+}
+
+.title-line {
+  font-family: var(--font-sans);
+  font-size: clamp(58px, 6.8vw, 96px);
+  font-weight: 400;
+  letter-spacing: -2.7px;
+  line-height: 0.85;
+  text-transform: uppercase;
+  color: var(--cream);
+  display: block;
+  animation: titleUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-play-state: paused;
+}
+
+.slide.is-active .title-line                   { animation-play-state: running; }
+.slide.is-active .title-line:first-child        { animation-delay: 0s; }
+.slide.is-active .title-line:last-child         { animation-delay: 0.09s; }
+
+/* Metadata row */
+.meta-row {
+  display: flex;
+  gap: 44px;
+  align-items: flex-start;
+  animation: fadeUp 0.55s ease 0.5s both;
+  animation-play-state: paused;
+}
+.slide.is-active .meta-row { animation-play-state: running; }
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.meta-label {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.55;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(250,247,239,0.25);
+  white-space: nowrap;
+}
+
+.meta-value {
+  font-family: var(--font-sans);
+  font-size: 20px;
+  color: var(--cream);
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+/* ============================================================
+   EXPLORE BUTTON
+   ============================================================ */
+.explore-btn {
+  position: absolute;
+  bottom: 52px;
+  right: 61px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--cream);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  z-index: 3;
+  animation: fadeIn 0.5s ease 0.65s both;
+  animation-play-state: paused;
+}
+.slide.is-active .explore-btn { animation-play-state: running; }
+
+.explore-arrow {
+  display: inline-block;
+  transition: transform 0.3s ease;
+  letter-spacing: 0;
+}
+
+.explore-btn:hover .explore-arrow {
+  transform: translateX(9px);
+}
+
+/* ============================================================
+   LANDING SLIDE
+   ============================================================ */
+.slide--landing .slide-content {
+  justify-content: center;
+  align-items: center;
+}
+
+.slide-content--landing {
+  pointer-events: none;
+}
+
+/* --- Landing video (no blur) --- */
+
+/* --- Centered landing overlay --- */
+.landing-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  pointer-events: none;
+  transition: opacity 0.15s linear;
+}
+
+/* Name — fluid reveal, matches about page .name-line style */
+.landing-name-wrap {
+  text-align: center;
+  overflow: hidden;
+}
+
+@keyframes landingNameReveal {
+  0%   { transform: translateY(105%); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: translateY(0);    opacity: 1; }
+}
+
+.landing-name {
+  font-family: var(--font-sans);
+  font-size: clamp(64px, 14vw, 160px);
+  font-weight: 400;
+  letter-spacing: -2.7px;
+  color: var(--cream);
+  text-transform: lowercase;
+  line-height: 0.9;
+  display: inline-block;
+  animation: landingNameReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+  animation-play-state: paused;
+}
+
+.slide.is-active .landing-name { animation-play-state: running; }
+
+/* Red dot after name — blink */
+@keyframes dotBlinkLanding {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.15; }
+}
+
+.landing-dot {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: var(--red);
+  border-radius: 50%;
+  margin-left: 8px;
+  vertical-align: super;
+  animation: landingNameReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both,
+             dotBlinkLanding 2.4s ease-in-out 1.4s infinite;
+  animation-play-state: paused;
+}
+
+.slide.is-active .landing-dot {
+  animation-play-state: running;
+}
+
+@media (max-width: 768px) {
+  .landing-name {
+    font-size: clamp(52px, 18vw, 120px);
+    letter-spacing: -1.5px;
+  }
+  .landing-dot {
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+  }
+}
+
+.landing-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+
+.landing-loader.is-hidden {
+  opacity: 0;
+}
+
+.landing-loader-ring {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(250, 247, 239, 0.28);
+  border-top-color: rgba(250, 247, 239, 0.95);
+  animation: spin 0.85s linear infinite;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+#progress-track {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gray);
+  z-index: 9998;
+}
+
+#progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--cream);
+  transition: width 0.08s linear;
+}
+
+/* ============================================================
+   SLIDE COUNTER
+   ============================================================ */
+#slide-counter {
+  position: fixed;
+  bottom: 26px;
+  left: 34px;
+  z-index: 500;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--cream);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ============================================================
+   MOBILE  <= 768px
+   ============================================================ */
+@media (max-width: 768px) {
+  body { overflow: hidden; }
+
+  #nav { padding: 20px; }
+  .nav-logo img { height: 26px; }
+  .selector-top { height: 34px; }
+  .selector-left { padding: 0 10px 0 11px; gap: 7px; }
+  .selector-hamburger { width: 36px; height: 34px; }
+  .selector-title { font-size: 9px; letter-spacing: 1.4px; }
+  .about-text { bottom: 22px; right: 22px; font-size: 9px; letter-spacing: 1.4px; }
+  .selector-dropdown {
+    top: 14px;
+    right: 14px;
+    width: min(86vw, 280px);
+    height: min(58vh, 380px);
+  }
+
+  .slide-content { padding: 28px 22px 40px; }
+  .left-col { max-width: 100%; }
+
+  .title-line {
+    font-size: clamp(50px, 12.5vw, 78px);
+    letter-spacing: -1.5px;
+  }
+
+  .meta-row { gap: 20px; flex-wrap: wrap; }
+
+  .explore-btn {
+    right: 22px;
+    bottom: 36px;
+    font-size: 14px;
+    letter-spacing: 2px;
+  }
+
+  .landing-name {
+    font-size: clamp(52px, 18vw, 120px);
+  }
+
+  #top-fade, #bottom-fade { height: 110px; }
+  #slide-counter { left: 22px; bottom: 20px; }
+}
+
+/* ============================================================
+   SCROLL HINT  (landing slide only)
+   ============================================================ */
+.scroll-hint {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  animation: scrollFadeIn 0.7s ease 1.2s both;
+  pointer-events: none;
+}
+
+.scroll-hint-label {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.55;
+}
+
+.scroll-hint-arrow {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, rgba(250,247,239,0.6), rgba(250,247,239,0));
+  animation: scrollPulse 1.8s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .scroll-hint { bottom: 40px; }
+}
+
+/* ============================================================
+   TERMINAL LOADING SCREEN
+   ============================================================ */
+#terminal-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 48px 60px;
+  gap: 40px;
+  font-family: "Courier New", Courier, monospace;
+  overflow: hidden;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+#terminal-loader.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+#terminal-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#terminal-output {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 560px;
+  width: 100%;
+}
+
+#terminal-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+#pct-canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+.t-line {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #fff;
+  white-space: pre;
+  opacity: 0;
+  transition: opacity 0.05s;
+}
+
+.t-line.visible { opacity: 1; }
+
+.t-line .t-dim   { color: rgba(255,255,255,0.35); }
+.t-line .t-ok    { color: #4dff91; }
+.t-line .t-warn  { color: #ffcc00; }
+.t-line .t-err   { color: rgb(255,15,0); }
+.t-line .t-accent{ color: rgb(255,15,0); }
+
+@keyframes caretBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100%{ opacity: 0; }
+}
+
+.t-caret {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  background: rgb(255,15,0);
+  vertical-align: text-bottom;
+  animation: caretBlink 0.9s step-end infinite;
+  margin-left: 2px;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Terminal Loading Screen -->
+<div id="terminal-loader" aria-hidden="true">
+  <div id="terminal-left">
+    <div id="terminal-output"></div>
+  </div>
+  <div id="terminal-right">
+    <canvas id="pct-canvas"></canvas>
+  </div>
+</div>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+
+<!-- Fades -->
+<div id="top-fade"></div>
+<div id="bottom-fade"></div>
+
+<!-- Counter -->
+<div id="slide-counter">01 / 07</div>
+
+<!-- ============================================================
+     NAVIGATION
+     ============================================================ -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo" aria-label="Home">
+    <img src="assets/images/Asset 2 - white.png" alt="Logo">
+  </a>
+  <div class="nav-right">
+    <div id="film-selector">
+      <div class="selector-card" id="selector-toggle">
+        <div class="selector-top">
+          <div class="selector-left">
+            <span class="selector-dot"></span>
+            <div class="selector-title-wrap">
+              <span class="selector-title" id="selector-title">Home</span>
+            </div>
+            <span class="selector-chevron">
+              <svg viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"/></svg>
+            </span>
+          </div>
+          <div class="selector-pill-divider"></div>
+          <div class="selector-hamburger">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="selector-divider"></div>
+        <div class="selector-meta" id="selector-meta">VISUAL ARCHIVE</div>
+      </div>
+      <div class="selector-backdrop" id="selector-backdrop" aria-hidden="true"></div>
+      <div class="selector-dropdown" id="selector-dropdown" aria-label="Project menu">
+        <div class="selector-menu-header">
+          <div class="selector-menu-title">rayul</div>
+          <button class="selector-close" id="selector-close" aria-label="Close menu">×</button>
+        </div>
+        <div class="selector-items" id="selector-items">
+          <a href="index.html" class="selector-item" data-page="work" style="--stagger: 0">
+
+            <div class="selector-item-title">Work</div>
+          </a>
+          <a href="about.html" class="selector-item" data-page="about" style="--stagger: 1">
+
+            <div class="selector-item-title">About</div>
+          </a>
+          <a href="gallery.html" class="selector-item" data-page="gallery" style="--stagger: 2">
+
+            <div class="selector-item-title">Gallery</div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <a href="about.html" class="about-text" id="about-pill" aria-label="About rayul">rayul</a>
+  </div>
+</nav>
+
+<!-- Slides (injected by JS) -->
+<div id="slides-container"></div>
+
+<!-- Progress -->
+<div id="progress-track"><div id="progress-fill"></div></div>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const landingSlide = {
+  isLanding: true,
+  vimeoId:    '1183593139',
+  vimeoHash:  '37c2129f54',
+  vimeoUrl:   'https://vimeo.com/1183593139/37c2129f54',
+};
+
+const films = [
+  {
+    vimeoId:    '1086260829',
+    vimeoUrl:   'https://vimeo.com/1086260829',
+    navTitle:   'VITALY OBLIVION',
+    titleLine1: 'VITALY',
+    titleLine2: 'OBLIVION S25',
+    category:   'Fashion Film',
+    year:       '2025',
+    role:       'Cinematographer / Editor',
+    metaRole:   'Cinematographer',
+    metaClient: 'Vitaly',
+  },
+  {
+    vimeoId:    '1180380678',
+    vimeoUrl:   'https://vimeo.com/1180380678',
+    navTitle:   'SAINT ANDRE',
+    titleLine1: 'SAINT ANDRE',
+    titleLine2: 'GRIMOIRE',
+    category:   'Music Video',
+    year:       '2025',
+    role:       'Director / Cinematographer',
+    metaRole:   'Director',
+    metaClient: 'Saint Andre',
+  },
+  {
+    vimeoId:    '1068478051',
+    vimeoUrl:   'https://vimeo.com/1068478051',
+    titleLine1: 'SPENCER BADU',
+    titleLine2: 'S25',
+    category:   'Fashion Film',
+    year:       '2025',
+    role:       'Cinematographer / Editor',
+    metaRole:   'Cinematographer',
+    metaClient: 'Spencer Badu',
+  },
+  {
+    vimeoId:    '1072859381',
+    vimeoUrl:   'https://vimeo.com/1072859381',
+    navTitle:   'GRAY HAWKEN',
+    titleLine1: 'GRAY HAWKEN',
+    titleLine2: 'GOLDEN STATE',
+    category:   'Music Video',
+    year:       '2024',
+    role:       'Director / Editor',
+    metaRole:   'Director',
+    metaClient: 'Gray Hawken',
+  },
+  {
+    vimeoId:    '1189542781',
+    vimeoUrl:   'https://vimeo.com/1189542781',
+    navTitle:   'GIRL DON\'T CRY LIVE',
+    titleLine1: 'GIRL DON\'T CRY',
+    titleLine2: 'LIVE',
+    category:   'Live Session',
+    year:       '2026',
+    role:       'Director / Editor',
+    metaRole:   'Director',
+    metaClient: 'Livingthing',
+  },
+  {
+    vimeoId:    '928892869',
+    vimeoUrl:   'https://vimeo.com/928892869',
+    titleLine1: 'ADROC',
+    titleLine2: 'AFTER REST',
+    category:   'Music Video',
+    year:       '2024',
+    role:       'Director / Cinematographer / Editor',
+    metaRole:   'Director',
+    metaClient: 'Adroc',
+  },
+  {
+    vimeoId:    '936429043',
+    vimeoUrl:   'https://vimeo.com/936429043',
+    titleLine1: 'JIWOO',
+    titleLine2: 'AFTERIMAGE',
+    category:   'Music Video',
+    year:       '2024',
+    role:       'Director / Editor',
+    metaRole:   'Director',
+    metaClient: 'Jiwoo',
+  },
+  {
+    vimeoId:    '838913497',
+    vimeoUrl:   'https://vimeo.com/838913497',
+    titleLine1: 'AMAAL NUUX',
+    titleLine2: 'THE MIDDLE',
+    category:   'Music Video',
+    year:       '2023',
+    role:       'Director / Editor',
+    metaRole:   'Director',
+    metaClient: 'Amaal Nuux',
+  },
+  {
+    vimeoId:    '512031476',
+    vimeoUrl:   'https://vimeo.com/512031476',
+    titleLine1: 'PRESENCE',
+    titleLine2: '',
+    category:   'Short Film',
+    year:       '2021',
+    role:       'Director / Editor',
+    metaRole:   'Director',
+    metaClient: 'Presence',
+  },
+  {
+    vimeoId:    '795354913',
+    vimeoUrl:   'https://vimeo.com/795354913',
+    titleLine1: 'SPENCER BADU',
+    titleLine2: 'S23',
+    category:   'Fashion Film',
+    year:       '2023',
+    role:       'Cinematographer / Editor',
+    metaRole:   'Cinematographer',
+    metaClient: 'Spencer Badu',
+  },
+  {
+    vimeoId:    '855555364',
+    vimeoUrl:   'https://vimeo.com/855555364',
+    titleLine1: 'VITALY',
+    titleLine2: 'BPM S23',
+    category:   'Fashion Film',
+    year:       '2023',
+    role:       'Cinematographer / Editor',
+    metaRole:   'Cinematographer',
+    metaClient: 'Vitaly',
+  },
+];
+
+const allSlides = [landingSlide, ...films];
+
+/* ============================================================
+   BUILD SLIDES + DROPDOWN
+   ============================================================ */
+const slidesContainer  = document.getElementById('slides-container');
+const selectorDropdown = document.getElementById('selector-dropdown');
+const selectorBackdrop = document.getElementById('selector-backdrop');
+
+allSlides.forEach((entry, i) => {
+  const slide = document.createElement('div');
+  slide.className   = 'slide';
+  slide.dataset.index = String(i);
+
+  if (entry.isLanding) {
+    slide.classList.add('slide--landing');
+    slide.innerHTML = `
+      <div class="video-bg" id="landing-video-bg">
+        <iframe
+          src="https://player.vimeo.com/video/${entry.vimeoId}?${entry.vimeoHash ? 'h=' + entry.vimeoHash + '&' : ''}background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+          allowfullscreen
+          loading="eager"
+        ></iframe>
+      </div>
+      <div class="landing-overlay" id="landing-overlay">
+      </div>
+      <div class="landing-loader" aria-hidden="true">
+        <div class="landing-loader-ring"></div>
+      </div>
+      <div class="scroll-hint" aria-hidden="true">
+        <span class="scroll-hint-label">scroll</span>
+        <div class="scroll-hint-arrow"></div>
+      </div>
+    `;
+
+    const landingIframe = slide.querySelector('iframe');
+    const landingLoader = slide.querySelector('.landing-loader');
+    const hideLandingLoader = () => landingLoader?.classList.add('is-hidden');
+    landingIframe?.addEventListener('load', hideLandingLoader, { once: true });
+    setTimeout(hideLandingLoader, 2500);
+  } else {
+    const film = entry;
+    slide.innerHTML = `
+      <div class="video-bg">
+        <iframe
+          src="https://player.vimeo.com/video/${film.vimeoId}?background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1"
+          frameborder="0"
+          allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+          allowfullscreen
+          loading="${i === 0 ? 'eager' : 'lazy'}"
+        ></iframe>
+      </div>
+      <div class="slide-content">
+        <div class="left-col">
+          <div class="bottom-info">
+            <span class="eyebrow">${film.role}</span>
+            <div class="title-wrap">
+              <div class="title-line-wrap">
+                <span class="title-line">${film.titleLine1}</span>
+              </div>
+              ${film.titleLine2 ? `<div class="title-line-wrap"><span class="title-line">${film.titleLine2}</span></div>` : ''}
+            </div>
+            <div class="meta-row">
+              <div class="meta-item">
+                <span class="meta-label">Year</span>
+                <span class="meta-value">${film.year}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Format</span>
+                <span class="meta-value">${film.category}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  slidesContainer.appendChild(slide);
+});
+
+/* ============================================================
+   SELECTOR
+   ============================================================ */
+const selectorToggle  = document.getElementById('selector-toggle');
+const selectorTitleEl = document.getElementById('selector-title');
+const selectorMetaEl  = document.getElementById('selector-meta');
+const slideCounterEl  = document.getElementById('slide-counter');
+const progressFill    = document.getElementById('progress-fill');
+const selectorCloseEl = document.getElementById('selector-close');
+
+let currentIndex = 0;
+
+function pad(n) { return String(n + 1).padStart(2, '0'); }
+
+function updateSelector(idx, prevIdx) {
+  const entry = allSlides[idx];
+  const newText = entry.isLanding
+    ? 'Home'
+    : (entry.navTitle || `${entry.titleLine1} ${entry.titleLine2}`);
+
+  const goingForward = prevIdx === undefined || idx > prevIdx;
+  const exitClass  = goingForward ? 'roll-exit-up'   : 'roll-exit-down';
+  const enterClass = goingForward ? 'roll-enter-up'  : 'roll-enter-down';
+
+  // Lock current width so the card doesn't snap
+  const fromW = selectorToggle.offsetWidth;
+  selectorToggle.style.transition = 'background 0.2s ease, border-color 0.2s ease';
+  selectorToggle.style.width = fromW + 'px';
+
+  // Cancel any in-flight animation cleanly
+  selectorTitleEl.classList.remove('roll-exit-up', 'roll-exit-down', 'roll-enter-up', 'roll-enter-down');
+  void selectorTitleEl.offsetWidth;
+
+  selectorTitleEl.classList.add(exitClass);
+  selectorTitleEl.addEventListener('animationend', () => {
+    selectorTitleEl.classList.remove(exitClass);
+    selectorTitleEl.textContent = newText;
+
+    // Measure the natural width with the new text
+    selectorToggle.style.transition = 'none';
+    selectorToggle.style.width = 'auto';
+    const toW = selectorToggle.offsetWidth;
+    // Snap back to fromW without transition, then animate forward
+    selectorToggle.style.width = fromW + 'px';
+    void selectorToggle.offsetWidth; // reflow
+    selectorToggle.style.transition = 'background 0.2s ease, border-color 0.2s ease, width 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    selectorToggle.style.width = toW + 'px';
+
+    // Once width settles, release back to auto so it's not fixed
+    selectorToggle.addEventListener('transitionend', (e) => {
+      if (e.propertyName !== 'width') return;
+      selectorToggle.style.width = 'auto';
+      selectorToggle.style.transition = 'background 0.2s ease, border-color 0.2s ease';
+    }, { once: true });
+
+    void selectorTitleEl.offsetWidth;
+    selectorTitleEl.classList.add(enterClass);
+    selectorTitleEl.addEventListener('animationend', () => {
+      selectorTitleEl.classList.remove(enterClass);
+    }, { once: true });
+  }, { once: true });
+
+  if (!entry.isLanding) {
+    selectorMetaEl.innerHTML = `${entry.category.toUpperCase()} &nbsp;|&nbsp; ${entry.year} &nbsp;|&nbsp; ${entry.metaRole.toUpperCase()}`;
+  }
+  slideCounterEl.textContent = `${pad(idx)} / ${pad(allSlides.length - 1)}`;
+}
+
+/* ============================================================
+   TEXT SCRAMBLE
+   ============================================================ */
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?';
+let _scrambleRaf = null;
+let _scrambleStoredText = '';
+
+function _cancelScramble() {
+  if (_scrambleRaf) { cancelAnimationFrame(_scrambleRaf); _scrambleRaf = null; }
+}
+
+function scrambleOut(el, duration = 320, onDone) {
+  _cancelScramble();
+  _scrambleStoredText = el.textContent;
+  const src = _scrambleStoredText;
+  const len = src.length;
+  const start = performance.now();
+
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    let result = '';
+    for (let i = 0; i < len; i++) {
+      if (src[i] === ' ') { result += ' '; continue; }
+      // chars clear left→right: later chars stay scrambled longer
+      const clearAt = 0.3 + (i / Math.max(len - 1, 1)) * 0.6; // 0.3 → 0.9
+      if (t >= clearAt) {
+        result += '\u00A0'; // non-breaking space keeps layout stable
+      } else {
+        result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      }
+    }
+    el.textContent = result;
+    if (t < 1) {
+      _scrambleRaf = requestAnimationFrame(tick);
+    } else {
+      el.textContent = '\u00A0'.repeat(len);
+      if (onDone) onDone();
+    }
+  }
+  _scrambleRaf = requestAnimationFrame(tick);
+}
+
+function scrambleIn(el, target, duration = 360) {
+  _cancelScramble();
+  const len = target.length;
+  const start = performance.now();
+
+  function tick(now) {
+    const t = Math.min((now - start) / duration, 1);
+    let result = '';
+    for (let i = 0; i < len; i++) {
+      if (target[i] === ' ') { result += ' '; continue; }
+      // chars resolve left→right: earlier chars lock in first
+      const resolveAt = (i / Math.max(len - 1, 1)) * 0.7; // 0 → 0.7
+      if (t >= resolveAt + 0.3) {
+        result += target[i];
+      } else if (t >= resolveAt) {
+        result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      } else {
+        result += '\u00A0';
+      }
+    }
+    el.textContent = result;
+    if (t < 1) {
+      _scrambleRaf = requestAnimationFrame(tick);
+    } else {
+      el.textContent = target;
+    }
+  }
+  _scrambleRaf = requestAnimationFrame(tick);
+}
+
+function openMenu() {
+  selectorToggle.classList.add('open');
+  // Scramble the title out as the dropdown opens
+  scrambleOut(selectorTitleEl, 300, () => {
+    // keep blank while menu is open — nothing to do here
+  });
+  selectorDropdown.classList.add('open');
+  selectorBackdrop.classList.add('open');
+}
+
+function closeMenu() {
+  selectorToggle.classList.remove('open');
+  selectorDropdown.classList.remove('open');
+  selectorBackdrop.classList.remove('open');
+  // Scramble the title back in after dropdown starts closing
+  const currentEntry = allSlides[currentIndex];
+  const restoreText = currentEntry
+    ? (currentEntry.isLanding ? 'Home' : (currentEntry.navTitle || `${currentEntry.titleLine1} ${currentEntry.titleLine2}`))
+    : (_scrambleStoredText || 'Home');
+  setTimeout(() => scrambleIn(selectorTitleEl, restoreText, 380), 80);
+}
+
+selectorToggle.addEventListener('click', () => {
+  if (selectorDropdown.classList.contains('open')) closeMenu();
+  else openMenu();
+});
+
+/* Mark active page in nav */
+(function() {
+  const isAbout = window.location.pathname.includes('about');
+  document.querySelectorAll('.selector-item[data-page]').forEach(item => {
+    const active = item.dataset.page === 'about' ? isAbout : !isAbout;
+    item.classList.toggle('active', active);
+  });
+})();
+
+selectorCloseEl.addEventListener('click', e => {
+  e.stopPropagation();
+  closeMenu();
+});
+
+selectorBackdrop.addEventListener('click', () => {
+  closeMenu();
+});
+
+document.addEventListener('click', e => {
+  if (!selectorDropdown.classList.contains('open')) return;
+  if (!e.target.closest('#selector-dropdown') && !e.target.closest('#selector-toggle')) {
+    closeMenu();
+  }
+});
+
+function scrollToSlide(idx) {
+  document.querySelectorAll('.slide')[idx]?.scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ============================================================
+   SCROLL: progress + slide index + parallax
+   ============================================================ */
+slidesContainer.addEventListener('scroll', () => {
+  const scrollTop = slidesContainer.scrollTop;
+  const maxScroll = slidesContainer.scrollHeight - slidesContainer.clientHeight;
+
+  progressFill.style.width = (maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0) + '%';
+
+  const newIdx = Math.min(Math.round(scrollTop / window.innerHeight), allSlides.length - 1);
+  if (newIdx !== currentIndex) {
+    const prevIndex = currentIndex;
+    currentIndex = newIdx;
+    updateSelector(currentIndex, prevIndex);
+  }
+
+  /* parallax */
+  document.querySelectorAll('.slide').forEach((slide, i) => {
+    const offset = scrollTop - i * window.innerHeight;
+    slide.querySelector('.video-bg').style.transform = `translateY(${offset * 0.14}px)`;
+  });
+}, { passive: true });
+
+/* ============================================================
+   ANIMATIONS — CSS class toggle
+   ============================================================ */
+const slides = document.querySelectorAll('.slide');
+
+function activateSlide(idx) {
+  slides.forEach((s, i) => {
+    if (i === idx) {
+      s.classList.add('is-active');
+    } else {
+      s.classList.remove('is-active');
+    }
+  });
+}
+
+/* Activate first slide on load */
+setTimeout(() => activateSlide(0), 50);
+window.addEventListener('load', () => activateSlide(0));
+
+/* Re-activate on scroll (piggyback on the existing scroll handler) */
+slidesContainer.addEventListener('scroll', () => {
+  const idx = Math.min(
+    Math.round(slidesContainer.scrollTop / window.innerHeight),
+    allSlides.length - 1
+  );
+  activateSlide(idx);
+}, { passive: true });
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+const cursor = document.getElementById('cursor');
+let mx = 0, my = 0, cx = 0, cy = 0;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function tick() {
+  cx += (mx - cx) * 0.13;
+  cy += (my - cy) * 0.13;
+  cursor.style.left = cx + 'px';
+  cursor.style.top  = cy + 'px';
+  requestAnimationFrame(tick);
+})();
+
+document.querySelectorAll('a, button, .selector-card, .selector-item').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('expanded'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('expanded'));
+});
+
+/* ============================================================
+   KEYBOARD NAV
+   ============================================================ */
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight')
+    scrollToSlide(Math.min(currentIndex + 1, allSlides.length - 1));
+  if (e.key === 'ArrowUp' || e.key === 'ArrowLeft')
+    scrollToSlide(Math.max(currentIndex - 1, 0));
+});
+
+/* ============================================================
+   TERMINAL LOADING SCREEN
+   ============================================================ */
+(function () {
+  const loader = document.getElementById('terminal-loader');
+  const output = document.getElementById('terminal-output');
+
+  // Skip intro if already played this session (e.g. navigating back from About)
+  if (sessionStorage.getItem('introPlayed')) {
+    loader.remove();
+    document.body.style.overflow = '';
+    return;
+  }
+
+  // gap = ms to wait after the PREVIOUS line finishes before starting this one
+  const LINES = [
+    { text: '> INITIALIZING SYSTEM...',                              gap: 0,  charDelay: 10 },
+    { text: '> LOADING KERNEL MODULES         [<ok>OK</ok>]',       gap: 40, charDelay: 6  },
+    { text: '> MOUNTING FILE SYSTEMS          [<ok>OK</ok>]',       gap: 24, charDelay: 6  },
+    { text: '> ESTABLISHING SECURE CHANNEL...',                      gap: 32, charDelay: 8  },
+    { text: '> AUTH HANDSHAKE                 [<ok>OK</ok>]',       gap: 40, charDelay: 6  },
+    { text: '> <dim>TRACE_ID: 4f8c-b2a1-9d3e-0071</dim>',           gap: 20, charDelay: 5  },
+    { text: '> SCANNING ASSETS...',                                  gap: 24, charDelay: 8  },
+    { text: '> ASSETS VERIFIED                [<ok>OK</ok>]',       gap: 32, charDelay: 6  },
+    { text: '> <warn>WARNING: MEMORY LEAK DETECTED — PATCHING</warn>', gap: 24, charDelay: 7 },
+    { text: '> PATCH APPLIED                  [<ok>OK</ok>]',       gap: 64, charDelay: 6  },
+    { text: '> COMPILING RENDER PIPELINE...',                        gap: 32, charDelay: 8  },
+    { text: '> <dim>BUILD 2026.04.08-r11 — 0 ERRORS</dim>',         gap: 24, charDelay: 5  },
+    { text: '> ALL SYSTEMS NOMINAL            [<ok>OK</ok>]',       gap: 24, charDelay: 6  },
+    { text: '> <accent>LAUNCHING PORTFOLIO_</accent>',               gap: 48, charDelay: 11, keepCaret: true },
+  ];
+
+  function parseMarkup(raw) {
+    return raw
+      .replace(/<ok>(.*?)<\/ok>/g,         '<span class="t-ok">$1</span>')
+      .replace(/<warn>(.*?)<\/warn>/g,      '<span class="t-warn">$1</span>')
+      .replace(/<err>(.*?)<\/err>/g,        '<span class="t-err">$1</span>')
+      .replace(/<dim>(.*?)<\/dim>/g,        '<span class="t-dim">$1</span>')
+      .replace(/<accent>(.*?)<\/accent>/g,  '<span class="t-accent">$1</span>');
+  }
+
+  // Type one line char-by-char; caret moves with the typing cursor
+  function typeLine(el, raw, charDelay, keepCaret) {
+    const plain = raw.replace(/<[^>]+>/g, '');
+    const total = plain.length;
+    let typed   = 0;
+
+    return new Promise(resolve => {
+      function next() {
+        typed++;
+        let visible = 0, result = '', i = 0;
+        while (i < raw.length && visible < typed) {
+          if (raw[i] === '<') {
+            const end = raw.indexOf('>', i);
+            result += raw.slice(i, end + 1);
+            i = end + 1;
+          } else {
+            result += raw[i++];
+            visible++;
+          }
+        }
+        el.innerHTML = parseMarkup(result) + '<span class="t-caret"></span>';
+
+        if (typed < total) {
+          setTimeout(next, charDelay);
+        } else {
+          if (!keepCaret) el.innerHTML = parseMarkup(result);
+          resolve();
+        }
+      }
+      setTimeout(next, charDelay);
+    });
+  }
+
+  /* ----------------------------------------------------------
+     DOT-MATRIX PERCENTAGE COUNTER
+     ---------------------------------------------------------- */
+  const canvas = document.getElementById('pct-canvas');
+  const ctx    = canvas.getContext('2d');
+  const DPR    = window.devicePixelRatio || 1;
+
+  const PITCH  = 22;   // cell size in CSS px (dot centre-to-centre)
+  const DOT_R  = 7;    // dot radius in CSS px
+  const CHAR_W = 5 * PITCH;
+  const CHAR_G = 16;   // gap between characters
+  const COLS   = 4;    // "000%"
+  const CW     = COLS * CHAR_W + (COLS - 1) * CHAR_G;
+  const CH     = 7 * PITCH;
+
+  canvas.style.width  = CW + 'px';
+  canvas.style.height = CH + 'px';
+  canvas.width  = Math.round(CW * DPR);
+  canvas.height = Math.round(CH * DPR);
+  ctx.scale(DPR, DPR);
+
+  // 5×7 dot-matrix glyph bitmaps
+  const GLYPHS = {
+    ' ': [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]],
+    '0': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,1,1],[1,0,1,0,1],[1,1,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+    '1': [[0,0,1,0,0],[0,1,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,1,1,1,0]],
+    '2': [[0,1,1,1,0],[1,0,0,0,1],[0,0,0,0,1],[0,0,0,1,0],[0,0,1,0,0],[0,1,0,0,0],[1,1,1,1,1]],
+    '3': [[1,1,1,1,0],[0,0,0,0,1],[0,0,0,0,1],[0,1,1,1,0],[0,0,0,0,1],[0,0,0,0,1],[1,1,1,1,0]],
+    '4': [[0,0,0,1,0],[0,0,1,1,0],[0,1,0,1,0],[1,0,0,1,0],[1,1,1,1,1],[0,0,0,1,0],[0,0,0,1,0]],
+    '5': [[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,0],[0,0,0,0,1],[0,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+    '6': [[0,0,1,1,0],[0,1,0,0,0],[1,0,0,0,0],[1,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+    '7': [[1,1,1,1,1],[0,0,0,0,1],[0,0,0,1,0],[0,0,1,0,0],[0,1,0,0,0],[0,1,0,0,0],[0,1,0,0,0]],
+    '8': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
+    '9': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,1],[0,0,0,0,1],[0,0,0,1,0],[0,1,1,0,0]],
+    '%': [[1,1,0,0,1],[1,1,0,1,0],[0,0,1,1,0],[0,0,1,0,0],[0,1,1,0,0],[0,1,0,1,1],[1,0,0,1,1]],
+  };
+
+  function drawPct(pct) {
+    ctx.clearRect(0, 0, CW, CH);
+    const str = String(Math.min(100, Math.floor(pct))).padStart(3, ' ') + '%';
+    for (let ci = 0; ci < str.length; ci++) {
+      const glyph = GLYPHS[str[ci]] || GLYPHS[' '];
+      const xOff  = ci * (CHAR_W + CHAR_G);
+      for (let row = 0; row < 7; row++) {
+        for (let col = 0; col < 5; col++) {
+          const on = glyph[row][col] === 1;
+          ctx.beginPath();
+          ctx.arc(
+            xOff + col * PITCH + PITCH / 2,
+            row  * PITCH + PITCH / 2,
+            DOT_R, 0, Math.PI * 2
+          );
+          ctx.fillStyle = on ? '#ffffff' : 'rgba(255,255,255,0.07)';
+          ctx.fill();
+        }
+      }
+    }
+  }
+
+  // Animate 0 → 100 % over ~3.4 s (matches terminal sequence length)
+  const PCT_DURATION = 3400;
+  const pctStart = performance.now();
+  drawPct(0);
+
+  function animatePct(now) {
+    const t     = Math.min((now - pctStart) / PCT_DURATION, 1);
+    const eased = 1 - Math.pow(1 - t, 2); // ease-out quad
+    drawPct(eased * 100);
+    if (t < 1) requestAnimationFrame(animatePct);
+  }
+  requestAnimationFrame(animatePct);
+
+  /* ----------------------------------------------------------
+     TERMINAL TYPING SEQUENCE
+     ---------------------------------------------------------- */
+  (async () => {
+    document.body.style.overflow = 'hidden';
+    let cursor = null;
+
+    for (let idx = 0; idx < LINES.length; idx++) {
+      const line = LINES[idx];
+      if (line.gap > 0) await new Promise(r => setTimeout(r, line.gap));
+      const el = document.createElement('div');
+      el.className = 't-line visible';
+      output.appendChild(el);
+      if (cursor) { cursor.remove(); cursor = null; }
+      await typeLine(el, line.text, line.charDelay, !!line.keepCaret);
+      if (line.keepCaret) cursor = el.querySelector('.t-caret');
+    }
+
+    drawPct(100); // ensure it lands on 100%
+
+    await new Promise(r => setTimeout(r, 550));
+    sessionStorage.setItem('introPlayed', '1');
+    loader.classList.add('fade-out');
+    document.body.style.overflow = '';
+    loader.addEventListener('transitionend', () => loader.remove(), { once: true });
+  })();
+})();
+
+</script>
+</body>
+</html>
