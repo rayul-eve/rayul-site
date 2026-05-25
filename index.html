@@ -871,6 +871,17 @@ a.selector-item {
 }
 
 /* ============================================================
+   DYNAMIC VIEWPORT HEIGHT — fixes mobile browser-chrome gap
+   ============================================================ */
+@supports (height: 100dvh) {
+  body,
+  #slides-container,
+  .slide {
+    height: 100dvh;
+  }
+}
+
+/* ============================================================
    MOBILE  <= 768px
    ============================================================ */
 @media (max-width: 768px) {
@@ -1555,11 +1566,13 @@ slidesContainer.addEventListener('scroll', () => {
     updateSelector(currentIndex, prevIndex);
   }
 
-  /* parallax */
-  document.querySelectorAll('.slide').forEach((slide, i) => {
-    const offset = scrollTop - i * window.innerHeight;
-    slide.querySelector('.video-bg').style.transform = `translateY(${offset * 0.14}px)`;
-  });
+  /* parallax — disabled on mobile to prevent top-gap glitch */
+  if (window.innerWidth > 768) {
+    document.querySelectorAll('.slide').forEach((slide, i) => {
+      const offset = scrollTop - i * window.innerHeight;
+      slide.querySelector('.video-bg').style.transform = `translateY(${offset * 0.14}px)`;
+    });
+  }
 }, { passive: true });
 
 /* ============================================================
@@ -1632,6 +1645,15 @@ document.addEventListener('keydown', e => {
   if (sessionStorage.getItem('introPlayed')) {
     loader.remove();
     document.body.style.overflow = '';
+    return;
+  }
+
+  // Skip on mobile — the 3.4s terminal sequence causes a black screen while Vimeo buffers
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    sessionStorage.setItem('introPlayed', '1');
+    loader.classList.add('fade-out');
+    document.body.style.overflow = '';
+    loader.addEventListener('transitionend', () => loader.remove(), { once: true });
     return;
   }
 

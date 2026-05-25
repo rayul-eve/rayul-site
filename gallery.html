@@ -1380,38 +1380,50 @@ function setActiveRole(role) {
     btn.classList.toggle('active', btn.dataset.role === role);
   });
 
-  /* Animate: fade grid out → swap cards → fade in */
+  /* Fade grid out */
   grid.classList.add('is-filtering');
 
   setTimeout(() => {
-    const cards = document.querySelectorAll('.gallery-card');
+    const cards = Array.from(document.querySelectorAll('.gallery-card'));
     let visibleCount = 0;
 
+    /* Phase 1 — instantly hard-reset all cards with no transition.
+       This prevents cards mid-transition from being visible when the grid
+       fades back in, which caused text to overlap/stack on top of each other. */
+    cards.forEach(card => {
+      card.style.transition = 'none';
+      card.classList.remove('visible');
+    });
+
+    /* Single reflow so the transition:none + class removal all take effect */
+    void grid.offsetHeight;
+
+    /* Phase 2 — show/hide cards and update role pills */
     cards.forEach(card => {
       const cardRoles = card.dataset.roles.split(',');
       const matches = !role || cardRoles.includes(role);
 
-      if (matches) {
-        card.classList.remove('card-hidden');
-        visibleCount++;
-        // Ensure entrance animation replays for newly revealed cards
-        card.classList.remove('visible');
-        setTimeout(() => card.classList.add('visible'), 30);
-      } else {
-        card.classList.add('card-hidden');
-        card.classList.remove('visible');
-      }
+      card.classList.toggle('card-hidden', !matches);
+      if (matches) visibleCount++;
 
-      /* Highlight matching role pills */
       card.querySelectorAll('.card-role-pill').forEach(pill => {
         pill.classList.toggle('role-match', role !== null && pill.dataset.role === role);
       });
     });
 
-    /* Show/hide empty state */
     emptyState.classList.toggle('visible', visibleCount === 0);
 
+    /* Fade grid back in */
     grid.classList.remove('is-filtering');
+
+    /* Phase 3 — staggered entrance for visible cards, re-enabling transitions first */
+    const visibleCards = cards.filter(c => !c.classList.contains('card-hidden'));
+    visibleCards.forEach((card, i) => {
+      setTimeout(() => {
+        card.style.transition = '';  /* restore CSS transition */
+        card.classList.add('visible');
+      }, i * 40);
+    });
   }, 220);
 }
 
