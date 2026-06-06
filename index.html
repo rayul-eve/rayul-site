@@ -1045,6 +1045,58 @@ a.selector-item {
   margin-left: 2px;
 }
 
+/* ============================================================
+   MOBILE LOADING STATE (replaces terminal on mobile)
+   ============================================================ */
+#mobile-loader-content {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #terminal-loader {
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+  }
+  #terminal-left,
+  #terminal-right {
+    display: none;
+  }
+  #mobile-loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+  .mobile-loader-name {
+    font-family: var(--font-sans);
+    font-size: clamp(56px, 20vw, 110px);
+    font-weight: 400;
+    letter-spacing: -2px;
+    color: var(--cream);
+    text-transform: lowercase;
+    line-height: 1;
+  }
+  .mobile-loader-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: var(--red);
+    border-radius: 50%;
+    margin-left: 5px;
+    vertical-align: super;
+    animation: dotBlink 2.4s ease-in-out infinite;
+  }
+  .mobile-loader-ring {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(250, 247, 239, 0.18);
+    border-top-color: rgba(250, 247, 239, 0.9);
+    animation: spin 0.85s linear infinite;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1056,6 +1108,11 @@ a.selector-item {
   </div>
   <div id="terminal-right">
     <canvas id="pct-canvas"></canvas>
+  </div>
+  <!-- Mobile-only loading state -->
+  <div id="mobile-loader-content" aria-hidden="true">
+    <div class="mobile-loader-name">rayul<span class="mobile-loader-dot"></span></div>
+    <div class="mobile-loader-ring"></div>
   </div>
 </div>
 
@@ -1683,12 +1740,24 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  // Skip on mobile — jump straight out so the landing video gets maximum buffer time
+  // On mobile: skip the terminal animation, show a minimal branded loading screen
+  // and fade it out as soon as the landing video fires its load event (max 3.5s)
   if (window.matchMedia('(max-width: 768px)').matches) {
     sessionStorage.setItem('introPlayed', '1');
-    loader.style.transition = 'none';   // no fade delay — remove instantly
-    loader.remove();
     document.body.style.overflow = '';
+
+    const landingIframe = document.querySelector('#landing-video-bg iframe');
+    let dismissed = false;
+    const dismissLoader = () => {
+      if (dismissed) return;
+      dismissed = true;
+      loader.classList.add('fade-out');
+      loader.addEventListener('transitionend', () => loader.remove(), { once: true });
+    };
+
+    // Dismiss as soon as the video is ready; safety timeout as fallback
+    landingIframe?.addEventListener('load', dismissLoader, { once: true });
+    setTimeout(dismissLoader, 3500);
     return;
   }
 
