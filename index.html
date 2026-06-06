@@ -1315,14 +1315,16 @@ allSlides.forEach((entry, i) => {
     setTimeout(hideLandingLoader, 2500);
   } else {
     const film = entry;
+    // Eager-load landing (0) + first two film slides (1, 2); lazy-load the rest
+    const isEager = i <= 2;
+    const iframeSrc = `https://player.vimeo.com/video/${film.vimeoId}?background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1`;
     slide.innerHTML = `
       <div class="video-bg">
         <iframe
-          src="https://player.vimeo.com/video/${film.vimeoId}?background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1"
+          ${isEager ? `src="${iframeSrc}"` : `data-src="${iframeSrc}"`}
           frameborder="0"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           allowfullscreen
-          loading="${i === 0 ? 'eager' : 'lazy'}"
         ></iframe>
       </div>
       <div class="slide-content">
@@ -1353,6 +1355,39 @@ allSlides.forEach((entry, i) => {
 
   slidesContainer.appendChild(slide);
 });
+
+/* ============================================================
+   LAZY VIDEO LOADING — preload 2 slides ahead via IntersectionObserver
+   ============================================================ */
+(function () {
+  const lazyIframes = document.querySelectorAll('iframe[data-src]');
+  if (!lazyIframes.length) return;
+
+  if ('IntersectionObserver' in window) {
+    const videoObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const iframe = entry.target;
+          iframe.src = iframe.dataset.src;
+          delete iframe.dataset.src;
+          videoObserver.unobserve(iframe);
+        });
+      },
+      {
+        root: slidesContainer,
+        // Fire when a slide is within 2 full viewport-heights below the visible area
+        // — means we're always loading the next 2 slides before the user reaches them
+        rootMargin: '0px 0px 200% 0px',
+        threshold: 0,
+      }
+    );
+    lazyIframes.forEach(iframe => videoObserver.observe(iframe));
+  } else {
+    // Fallback for very old browsers — load everything
+    lazyIframes.forEach(iframe => { iframe.src = iframe.dataset.src; });
+  }
+})();
 
 /* ============================================================
    SELECTOR
@@ -1648,12 +1683,12 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  // Skip on mobile — the 3.4s terminal sequence causes a black screen while Vimeo buffers
+  // Skip on mobile — jump straight out so the landing video gets maximum buffer time
   if (window.matchMedia('(max-width: 768px)').matches) {
     sessionStorage.setItem('introPlayed', '1');
-    loader.classList.add('fade-out');
+    loader.style.transition = 'none';   // no fade delay — remove instantly
+    loader.remove();
     document.body.style.overflow = '';
-    loader.addEventListener('transitionend', () => loader.remove(), { once: true });
     return;
   }
 
