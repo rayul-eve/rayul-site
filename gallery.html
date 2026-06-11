@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js" defer></script>
 <style>
 
 /* ============================================================
@@ -124,210 +126,6 @@ body::after {
   background: linear-gradient(to bottom, rgba(0,0,0,0.96) 0%, transparent 100%);
 }
 
-/* ============================================================
-   NAVIGATION
-   ============================================================ */
-#nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 32px 34px;
-  pointer-events: none;
-}
-#nav > * { pointer-events: auto; }
-
-.nav-logo {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-  line-height: 0;
-}
-.nav-logo img { height: 34px; width: auto; }
-.nav-right { display: flex; align-items: center; gap: 16px; }
-
-/* ============================================================
-   SELECTOR CARD (nav pill)
-   ============================================================ */
-#film-selector { position: relative; }
-
-.selector-card {
-  background: rgba(250, 247, 239, 0.97);
-  padding: 0;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 10px;
-  cursor: none;
-  backdrop-filter: blur(12px);
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
-  overflow: hidden;
-}
-.selector-card:hover { box-shadow: 0 6px 28px rgba(0,0,0,0.26); border-color: rgba(0,0,0,0.18); }
-
-.selector-top {
-  display: flex;
-  align-items: center;
-  height: 38px;
-}
-.selector-left {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0 12px 0 13px;
-  flex: 1;
-}
-.selector-title-wrap { overflow: hidden; }
-.selector-title {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  line-height: 1;
-  color: #0a0a0a;
-  display: block;
-  will-change: transform, opacity;
-  white-space: nowrap;
-}
-.selector-title.roll-exit-up    { animation: titleRollOutUp   0.18s ease-in  forwards; }
-.selector-title.roll-exit-down  { animation: titleRollOutDown 0.18s ease-in  forwards; }
-.selector-title.roll-enter-up   { animation: titleRollInUp    0.22s ease-out forwards; }
-.selector-title.roll-enter-down { animation: titleRollInDown  0.22s ease-out forwards; }
-
-.selector-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--red);
-  flex-shrink: 0;
-  animation: dotBlink 2.4s ease-in-out infinite;
-}
-.selector-chevron {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  opacity: 0.45;
-  margin-left: 4px;
-}
-.selector-chevron svg {
-  width: 9px; height: 9px;
-  stroke: #0a0a0a; fill: none;
-  stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-}
-.selector-pill-divider { width: 1px; height: 20px; background: rgba(0,0,0,0.1); flex-shrink: 0; }
-.selector-hamburger {
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  gap: 4px; width: 40px; height: 38px; flex-shrink: 0; cursor: none;
-}
-.selector-hamburger span {
-  display: block; width: 15px; height: 1.5px;
-  background: #0a0a0a; border-radius: 1px;
-  transition: opacity 0.15s ease;
-}
-.selector-card:hover .selector-hamburger span { opacity: 0.7; }
-
-.selector-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 280; opacity: 0; pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-.selector-backdrop.open { opacity: 1; pointer-events: auto; }
-
-.selector-dropdown {
-  position: fixed; top: 22px; right: 22px;
-  width: 280px; max-height: min(80vh, 560px);
-  display: flex; flex-direction: column;
-  background: var(--cream);
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 14px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.12);
-  z-index: 290; overflow: hidden;
-  opacity: 0;
-  transform: scale(0.96) translateY(-6px);
-  transform-origin: top right;
-  pointer-events: none; visibility: hidden;
-  transition: opacity 0.22s ease-out, transform 0.22s cubic-bezier(0.25,0.46,0.45,0.94), visibility 0.22s ease-out;
-}
-.selector-dropdown.open {
-  opacity: 1; transform: scale(1) translateY(0);
-  pointer-events: auto; visibility: visible;
-}
-.selector-menu-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 14px 10px;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
-}
-.selector-close {
-  appearance: none;
-  border: 1px solid rgba(0,0,0,0.14);
-  background: transparent;
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; line-height: 1;
-  cursor: none; color: rgba(0,0,0,0.5);
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-}
-.selector-close:hover { color: #0a0a0a; border-color: rgba(0,0,0,0.3); background: rgba(0,0,0,0.04); }
-
-.selector-menu-title {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 2.4px;
-  text-transform: lowercase;
-  color: #0a0a0a;
-}
-
-.selector-items {
-  flex: 1; min-height: 0; overflow-y: auto;
-  padding: 4px 0 6px;
-  scrollbar-width: none; -ms-overflow-style: none;
-}
-.selector-items::-webkit-scrollbar { display: none; }
-
-a.selector-item { display: block; text-decoration: none; color: inherit; }
-.selector-item {
-  position: relative;
-  padding: 14px 22px;
-  font-family: var(--font-sans);
-  cursor: none;
-  border-top: 1px solid rgba(0,0,0,0.06);
-  line-height: 1;
-  opacity: 0;
-  transform: translateY(10px);
-  will-change: opacity, transform;
-  overflow: hidden;
-}
-.selector-item::before {
-  content: ''; position: absolute; inset: 0;
-  background: #0a0a0a;
-  transform: translateX(-100%);
-  transition: transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94);
-}
-.selector-item:hover::before { transform: translateX(0); }
-.selector-item:hover .selector-item-num,
-.selector-item:hover .selector-item-title { color: var(--cream); }
-.selector-dropdown.open .selector-item {
-  animation: menuItemIn 0.38s cubic-bezier(0.2,0.7,0.2,1) forwards;
-  animation-delay: calc(60ms + (var(--stagger,0) * 40ms));
-}
-.selector-item.active .selector-item-num   { color: var(--red); }
-.selector-item.active .selector-item-title { opacity: 1; }
-
-.selector-item-num {
-  display: block; font-size: 8px; letter-spacing: 1.4px;
-  color: rgba(0,0,0,0.3); text-transform: uppercase;
-  margin-bottom: 5px; position: relative;
-  transition: color 0.15s ease;
-}
-.selector-item-title {
-  font-size: 17px; color: #0a0a0a;
-  font-weight: 400; letter-spacing: 2.2px;
-  text-transform: uppercase;
-  position: relative; transition: color 0.15s ease;
-}
 
 /* ============================================================
    PAGE LAYOUT — sidebar + grid
@@ -734,51 +532,22 @@ a.selector-item { display: block; text-decoration: none; color: inherit; }
 <!-- ============================================================
      NAVIGATION
      ============================================================ -->
-<nav id="nav">
-  <a href="index.html" class="nav-logo" aria-label="Home">
-    <img src="assets/images/Asset 2 - white.png" alt="">
-  </a>
-  <div class="nav-right">
-    <div id="film-selector">
-      <div class="selector-card" id="selector-toggle" role="button" tabindex="0" aria-label="Open navigation menu">
-        <div class="selector-top">
-          <div class="selector-left">
-            <span class="selector-dot"></span>
-            <div class="selector-title-wrap">
-              <span class="selector-title" id="selector-title">Gallery</span>
-            </div>
-            <span class="selector-chevron">
-              <svg viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"/></svg>
-            </span>
-          </div>
-          <div class="selector-pill-divider"></div>
-          <div class="selector-hamburger">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-      </div>
-      <div class="selector-backdrop" id="selector-backdrop" aria-hidden="true"></div>
-      <div class="selector-dropdown" id="selector-dropdown" aria-label="Navigation menu">
-        <div class="selector-menu-header">
-          <div class="selector-menu-title">rayul</div>
-          <button class="selector-close" id="selector-close" aria-label="Close menu">×</button>
-        </div>
-        <div class="selector-items">
-          <a href="index.html" class="selector-item" data-page="work" style="--stagger:0">
-
-            <div class="selector-item-title">Work</div>
-          </a>
-          <a href="about.html" class="selector-item" data-page="about" style="--stagger:1">
-
-            <div class="selector-item-title">About</div>
-          </a>
-          <a href="gallery.html" class="selector-item active" data-page="gallery" style="--stagger:2">
-
-            <div class="selector-item-title">Gallery</div>
-          </a>
-        </div>
-      </div>
+<nav id="nav" aria-label="Primary">
+  <div class="nav-cluster nav-cluster--left">
+    <a href="index.html" class="nav-pill nav-pill--logo" aria-label="Home">
+      <img src="assets/images/Asset 2 - white.png" alt="rayul">
+    </a>
+  </div>
+  <div class="nav-cluster nav-cluster--right">
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="WORK">WORK</span></a>
+      <a href="gallery.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="GALLERY">GALLERY</span></a>
+      <a href="about.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="ABOUT">ABOUT</span></a>
     </div>
+    <button type="button" class="nav-pill nav-pill--toggle" id="nav-menu-toggle" aria-expanded="false" aria-controls="nav-links">
+      <span class="nav-pill-label">MENU</span>
+    </button>
+    <a href="about.html" class="nav-pill nav-pill--plus" aria-label="Contact"><span class="nav-dot"></span></a>
   </div>
 </nav>
 
@@ -906,7 +675,7 @@ const PROJECTS = [
     id: 'project-yt-4',
     youtubeId: '',
     youtubeUrl: '#',
-    localThumb: 'assets/images/malik-360.jpg',
+    localThumb: 'assets/images/malik-360-thumb.jpg',
     title: 'MAL1K — 360',
     desc: 'Music Video',
     roles: ['CINEMATOGRAPHY'],
@@ -916,7 +685,7 @@ const PROJECTS = [
     id: 'project-yt-5',
     youtubeId: 'SJzhhWdJ5kw',
     youtubeUrl: 'https://www.youtube.com/watch?v=SJzhhWdJ5kw',
-    localThumb: 'assets/images/diljit-ghost.jpg',
+    localThumb: 'assets/images/diljit-ghost-thumb.jpg',
     title: 'Diljit Dosanjh — Ghost',
     desc: 'Music Video',
     roles: ['COLOUR GRADING'],
@@ -926,7 +695,7 @@ const PROJECTS = [
     id: 'project-yt-6',
     youtubeId: 'iUcrHEb3YvE',
     youtubeUrl: 'https://www.youtube.com/watch?v=iUcrHEb3YvE',
-    localThumb: 'assets/images/tesher-thumbnail.png',
+    localThumb: 'assets/images/tesher-thumb.jpg',
     title: 'Tesher — Ve Mundeya',
     desc: 'Music Video',
     roles: ['VFX'],
@@ -1203,23 +972,7 @@ document.addEventListener('mousemove', e => {
 function expandCursor()   { cursorEl.classList.add('expanded'); }
 function collapseCursor() { cursorEl.classList.remove('expanded'); }
 
-/* ============================================================
-   NAV SELECTOR
-   ============================================================ */
-const selectorToggle   = document.getElementById('selector-toggle');
-const selectorDropdown = document.getElementById('selector-dropdown');
-const selectorBackdrop = document.getElementById('selector-backdrop');
-const selectorClose    = document.getElementById('selector-close');
-
-const openMenu  = () => { selectorDropdown.classList.add('open');    selectorBackdrop.classList.add('open'); };
-const closeMenu = () => { selectorDropdown.classList.remove('open'); selectorBackdrop.classList.remove('open'); };
-
-selectorToggle.addEventListener('click', () => selectorDropdown.classList.contains('open') ? closeMenu() : openMenu());
-selectorBackdrop.addEventListener('click', closeMenu);
-selectorClose.addEventListener('click', closeMenu);
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-
-[selectorToggle, ...document.querySelectorAll('a, button, [role="button"]')].forEach(el => {
+[...document.querySelectorAll('a, button, [role="button"]')].forEach(el => {
   el.addEventListener('mouseenter', expandCursor);
   el.addEventListener('mouseleave', collapseCursor);
 });
@@ -1274,7 +1027,7 @@ PROJECTS.forEach((project, idx) => {
 
   card.innerHTML = `
     <div class="card-thumb" id="thumb-${project.id}">
-      <img id="img-${project.id}" alt="${project.title}">
+      <img id="img-${project.id}" alt="${project.title}" decoding="async">
       <div class="card-thumb-overlay">
         <div class="card-play-ring">
           <div class="card-play-arrow"></div>
@@ -1296,9 +1049,19 @@ PROJECTS.forEach((project, idx) => {
 });
 
 /* ============================================================
-   LOAD THUMBNAILS (local or YouTube)
+   LOAD THUMBNAILS (local / Vimeo / YouTube) — lazy
+   --------------------------------------------------------
+   Loading all ~30 thumbnails up front meant 30+ network
+   requests before the page settled. Instead, each card loads
+   its thumbnail only when it's within ~600px of the viewport.
    ============================================================ */
-PROJECTS.forEach(project => {
+const PROJECTS_BY_ID = Object.fromEntries(PROJECTS.map(p => [p.id, p]));
+const loadedThumbs = new Set();
+
+function loadThumb(project) {
+  if (loadedThumbs.has(project.id)) return;
+  loadedThumbs.add(project.id);
+
   const img   = document.getElementById(`img-${project.id}`);
   const thumb = document.getElementById(`thumb-${project.id}`);
   if (!img || !thumb) return;
@@ -1367,7 +1130,19 @@ PROJECTS.forEach(project => {
   };
 
   img.src = maxRes;
-});
+}
+
+/* Observe cards — load each thumbnail just before it scrolls into view */
+const thumbObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const project = PROJECTS_BY_ID[entry.target.id];
+    if (project) loadThumb(project);
+    thumbObserver.unobserve(entry.target);
+  });
+}, { rootMargin: '600px 0px' });
+
+document.querySelectorAll('.gallery-card').forEach(card => thumbObserver.observe(card));
 
 /* ============================================================
    ROLE FILTER LOGIC
