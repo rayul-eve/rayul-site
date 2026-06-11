@@ -8,7 +8,13 @@
 <link rel="apple-touch-icon" href="assets/images/favicon - white.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://player.vimeo.com">
+<link rel="preconnect" href="https://i.vimeocdn.com">
+<link rel="preconnect" href="https://f.vimeocdn.com">
+<link rel="preconnect" href="https://vumbnail.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js" defer></script>
 <style>
 
 /* ============================================================
@@ -161,373 +167,6 @@ body::after {
 }
 
 /* ============================================================
-   NAVIGATION
-   ============================================================ */
-#nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 32px 34px;
-}
-
-.nav-logo {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-  line-height: 0;
-}
-
-.nav-logo img {
-  height: 34px;
-  width: auto;
-}
-
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* ============================================================
-   FILM SELECTOR CARD
-   ============================================================ */
-#film-selector {
-  position: relative;
-}
-
-.selector-card {
-  background: rgba(250, 247, 239, 0.97);
-  width: auto;
-  padding: 0;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
-  cursor: none;
-  user-select: none;
-  backdrop-filter: blur(12px);
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.18);
-  overflow: hidden;
-}
-
-.selector-card:hover {
-  box-shadow: 0 6px 28px rgba(0,0,0,0.26);
-  border-color: rgba(0,0,0,0.18);
-}
-
-.selector-top {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 0;
-  height: 38px;
-}
-
-/* Left section: dot + title + chevron */
-.selector-left {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0 12px 0 13px;
-  flex: 1;
-}
-
-.selector-title-wrap {
-  overflow: hidden;
-}
-
-.selector-title {
-  font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
-  line-height: 1;
-  color: #0a0a0a;
-  display: block;
-  will-change: transform, opacity;
-  white-space: nowrap;
-}
-
-.selector-title.roll-exit-up   { animation: titleRollOutUp   0.18s ease-in  forwards; }
-.selector-title.roll-exit-down { animation: titleRollOutDown 0.18s ease-in  forwards; }
-.selector-title.roll-enter-up  { animation: titleRollInUp    0.22s ease-out forwards; }
-.selector-title.roll-enter-down{ animation: titleRollInDown  0.22s ease-out forwards; }
-
-.selector-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--red);
-  flex-shrink: 0;
-  display: block;
-  transition: transform 0.2s ease;
-  animation: dotBlink 2.4s ease-in-out infinite;
-}
-
-.selector-card.open .selector-dot {
-  transform: scale(1.3);
-}
-
-/* Chevron icon */
-.selector-chevron {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  opacity: 0.45;
-  margin-left: 4px;
-}
-.selector-chevron svg {
-  width: 9px;
-  height: 9px;
-  stroke: #0a0a0a;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* Vertical divider */
-.selector-pill-divider {
-  width: 1px;
-  height: 20px;
-  background: rgba(0,0,0,0.1);
-  flex-shrink: 0;
-}
-
-/* Hamburger right section */
-.selector-hamburger {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 4px;
-  width: 40px;
-  height: 38px;
-  flex-shrink: 0;
-  cursor: none;
-}
-.selector-hamburger span {
-  display: block;
-  width: 15px;
-  height: 1.5px;
-  background: #0a0a0a;
-  border-radius: 1px;
-  transition: opacity 0.15s ease;
-}
-.selector-card:hover .selector-hamburger span {
-  opacity: 0.7;
-}
-
-.selector-divider {
-  display: none;
-}
-
-.selector-meta {
-  display: none;
-}
-
-.selector-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 280;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-}
-
-.selector-backdrop.open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.selector-dropdown {
-  position: fixed;
-  top: 22px;
-  right: 22px;
-  width: 280px;
-  max-height: min(80vh, 560px);
-  display: flex;
-  flex-direction: column;
-  background: var(--cream);
-  border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 14px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 4px 16px rgba(0,0,0,0.12);
-  z-index: 290;
-  overflow: hidden;
-  opacity: 0;
-  transform: scale(0.96) translateY(-6px);
-  transform-origin: top right;
-  pointer-events: none;
-  visibility: hidden;
-  transition: opacity 0.22s ease-out, transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94), visibility 0.22s ease-out;
-}
-
-.selector-dropdown.open {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  pointer-events: auto;
-  visibility: visible;
-}
-
-.selector-menu-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px 10px;
-  border-bottom: 1px solid rgba(0,0,0,0.07);
-}
-
-.selector-close {
-  appearance: none;
-  border: 1px solid rgba(0,0,0,0.14);
-  background: transparent;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  line-height: 1;
-  cursor: none;
-  color: rgba(0,0,0,0.5);
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-}
-
-.selector-close:hover {
-  color: #0a0a0a;
-  border-color: rgba(0,0,0,0.3);
-  background: rgba(0,0,0,0.04);
-}
-
-.selector-menu-title {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 400;
-  letter-spacing: 2.4px;
-  text-transform: lowercase;
-  color: #0a0a0a;
-}
-
-.selector-items {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  padding: 4px 0 6px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.selector-items::-webkit-scrollbar {
-  display: none;
-}
-
-a.selector-item {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-.selector-item {
-  position: relative;
-  padding: 14px 22px;
-  font-family: var(--font-sans);
-  cursor: none;
-  border-top: 1px solid rgba(0,0,0,0.06);
-  line-height: 1;
-  opacity: 0;
-  transform: translateY(10px);
-  will-change: opacity, transform;
-  overflow: hidden;
-}
-
-.selector-item::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: #0a0a0a;
-  transform: translateX(-100%);
-  transition: transform 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-.selector-item:hover::before {
-  transform: translateX(0);
-}
-
-.selector-item:hover .selector-item-num,
-.selector-item:hover .selector-item-title {
-  color: var(--cream);
-}
-
-.selector-dropdown.open .selector-item {
-  animation: menuItemIn 0.38s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-  animation-delay: calc(60ms + (var(--stagger, 0) * 40ms));
-}
-
-.selector-item.active .selector-item-title {
-  opacity: 1;
-}
-
-.selector-item.active .selector-item-num {
-  color: var(--red);
-}
-
-/* Number prefix */
-.selector-item-num {
-  display: block;
-  font-size: 8px;
-  letter-spacing: 1.4px;
-  color: rgba(0,0,0,0.3);
-  text-transform: uppercase;
-  margin-bottom: 5px;
-  position: relative;
-  transition: color 0.15s ease;
-  font-family: var(--font-sans);
-}
-
-.selector-item-title {
-  font-size: 17px;
-  color: #0a0a0a;
-  font-weight: 400;
-  letter-spacing: 2.2px;
-  text-transform: uppercase;
-  position: relative;
-  transition: color 0.15s ease;
-}
-
-.selector-item-subtitle {
-  margin-top: 3px;
-  font-size: 9px;
-  color: rgba(0,0,0,0.35);
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  position: relative;
-}
-
-.about-text {
-  position: fixed;
-  bottom: 32px;
-  right: 34px;
-  z-index: 150;
-  font-family: var(--font-sans);
-  font-size: 10px;
-  letter-spacing: 2px;
-  color: var(--cream);
-  text-decoration: none;
-  text-transform: lowercase;
-  opacity: 0.55;
-  cursor: none;
-  transition: opacity 0.2s ease;
-}
-
-.about-text:hover {
-  opacity: 1;
-}
-
-/* ============================================================
    SLIDES CONTAINER
    ============================================================ */
 #slides-container {
@@ -580,6 +219,24 @@ a.selector-item {
   transform: translate(-50%, -50%);
   pointer-events: none;
   border: none;
+  /* Hidden until the video actually plays — the poster shows through instead of black */
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.video-bg iframe.is-playing { opacity: 1; }
+
+/* Instant poster image — same cover-sizing as the iframe, sits behind it */
+.video-poster {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 56.25vw;
+  min-height: 100%;
+  min-width: 177.78vh;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
 }
 
 /* ============================================================
@@ -855,22 +512,6 @@ a.selector-item {
 }
 
 /* ============================================================
-   SLIDE COUNTER
-   ============================================================ */
-#slide-counter {
-  position: fixed;
-  bottom: 26px;
-  left: 34px;
-  z-index: 500;
-  font-family: var(--font-sans);
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: var(--cream);
-  opacity: 0.35;
-  pointer-events: none;
-}
-
-/* ============================================================
    DYNAMIC VIEWPORT HEIGHT — fixes mobile browser-chrome gap
    ============================================================ */
 @supports (height: 100dvh) {
@@ -887,19 +528,6 @@ a.selector-item {
 @media (max-width: 768px) {
   body { overflow: hidden; }
 
-  #nav { padding: 20px; }
-  .nav-logo img { height: 26px; }
-  .selector-top { height: 34px; }
-  .selector-left { padding: 0 10px 0 11px; gap: 7px; }
-  .selector-hamburger { width: 36px; height: 34px; }
-  .selector-title { font-size: 9px; letter-spacing: 1.4px; }
-  .about-text { bottom: 22px; right: 22px; font-size: 9px; letter-spacing: 1.4px; }
-  .selector-dropdown {
-    top: 14px;
-    right: 14px;
-    width: min(86vw, 280px);
-    height: min(58vh, 380px);
-  }
 
   .slide-content { padding: 28px 22px 40px; }
   .left-col { max-width: 100%; }
@@ -923,7 +551,6 @@ a.selector-item {
   }
 
   #top-fade, #bottom-fade { height: 110px; }
-  #slide-counter { left: 22px; bottom: 20px; }
 }
 
 /* ============================================================
@@ -932,8 +559,8 @@ a.selector-item {
 .scroll-hint {
   position: absolute;
   bottom: 52px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
   z-index: 3;
   display: flex;
   flex-direction: column;
@@ -964,121 +591,57 @@ a.selector-item {
 }
 
 /* ============================================================
-   TERMINAL LOADING SCREEN
+   INTRO — LINES → RED CIRCLE → LANDING VIDEO
    ============================================================ */
-#terminal-loader {
+#intro {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  background: #000;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 48px 60px;
-  gap: 40px;
-  font-family: "Courier New", Courier, monospace;
-  overflow: hidden;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
-}
-
-#terminal-loader.fade-out {
-  opacity: 0;
-  visibility: hidden;
   pointer-events: none;
 }
 
-#terminal-left {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-#terminal-output {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  max-width: 560px;
+#intro-canvas {
+  position: absolute;
+  inset: 0;
   width: 100%;
-}
-
-#terminal-right {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-#pct-canvas {
+  height: 100%;
   display: block;
-  image-rendering: pixelated;
 }
 
-.t-line {
-  font-size: 13px;
-  line-height: 1.7;
-  color: #fff;
-  white-space: pre;
+#intro-title {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: baseline;
   opacity: 0;
-  transition: opacity 0.05s;
+  transition: opacity 0.9s ease;
+  will-change: opacity;
 }
 
-.t-line.visible { opacity: 1; }
+#intro.title-in  #intro-title { opacity: 1; }
+#intro.title-out #intro-title { opacity: 0; transition: opacity 0.45s ease; }
 
-.t-line .t-dim   { color: rgba(255,255,255,0.35); }
-.t-line .t-ok    { color: #4dff91; }
-.t-line .t-warn  { color: #ffcc00; }
-.t-line .t-err   { color: rgb(255,15,0); }
-.t-line .t-accent{ color: rgb(255,15,0); }
-
-@keyframes caretBlink {
-  0%, 49% { opacity: 1; }
-  50%, 100%{ opacity: 0; }
+#intro-title img {
+  display: block;
+  width: 120px;
+  height: auto;
 }
 
-.t-caret {
-  display: inline-block;
-  width: 8px;
-  height: 1em;
-  background: rgb(255,15,0);
-  vertical-align: text-bottom;
-  animation: caretBlink 0.9s step-end infinite;
-  margin-left: 2px;
-}
-
-/* ============================================================
-   TERMINAL — MOBILE ADJUSTMENTS
-   Hide the dot-matrix canvas (too wide for phones); let the
-   terminal text fill the full width instead.
-   ============================================================ */
 @media (max-width: 768px) {
-  #terminal-loader {
-    padding: 40px 28px;
-    gap: 0;
-  }
-  #terminal-right {
-    display: none;
-  }
-  #terminal-output {
-    max-width: 100%;
-  }
-  .t-line {
-    font-size: 11px;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
+  #intro-title img { width: 96px; }
 }
 
 </style>
 </head>
 <body>
 
-<!-- Terminal Loading Screen -->
-<div id="terminal-loader" aria-hidden="true">
-  <div id="terminal-left">
-    <div id="terminal-output"></div>
-  </div>
-  <div id="terminal-right">
-    <canvas id="pct-canvas"></canvas>
+<!-- Intro — lines → red circle → landing video -->
+<div id="intro" aria-hidden="true">
+  <canvas id="intro-canvas"></canvas>
+  <div id="intro-title">
+    <img src="assets/images/Asset 2 - white.png" alt="rayul">
   </div>
 </div>
 
@@ -1089,71 +652,34 @@ a.selector-item {
 <div id="top-fade"></div>
 <div id="bottom-fade"></div>
 
-<!-- Counter -->
-<div id="slide-counter">01 / 07</div>
-
 <!-- ============================================================
      NAVIGATION
      ============================================================ -->
-<nav id="nav">
-  <a href="index.html" class="nav-logo" aria-label="Home">
-    <img src="assets/images/Asset 2 - white.png" alt="Logo">
-  </a>
-  <div class="nav-right">
-    <div id="film-selector">
-      <div class="selector-card" id="selector-toggle">
-        <div class="selector-top">
-          <div class="selector-left">
-            <span class="selector-dot"></span>
-            <div class="selector-title-wrap">
-              <span class="selector-title" id="selector-title">Home</span>
-            </div>
-            <span class="selector-chevron">
-              <svg viewBox="0 0 10 6"><polyline points="1 1 5 5 9 1"/></svg>
-            </span>
-          </div>
-          <div class="selector-pill-divider"></div>
-          <div class="selector-hamburger">
-            <span></span><span></span><span></span>
-          </div>
-        </div>
-        <div class="selector-divider"></div>
-        <div class="selector-meta" id="selector-meta">VISUAL ARCHIVE</div>
-      </div>
-      <div class="selector-backdrop" id="selector-backdrop" aria-hidden="true"></div>
-      <div class="selector-dropdown" id="selector-dropdown" aria-label="Project menu">
-        <div class="selector-menu-header">
-          <div class="selector-menu-title">rayul</div>
-          <button class="selector-close" id="selector-close" aria-label="Close menu">×</button>
-        </div>
-        <div class="selector-items" id="selector-items">
-          <a href="index.html" class="selector-item" data-page="work" style="--stagger: 0">
-
-            <div class="selector-item-title">Work</div>
-          </a>
-          <a href="about.html" class="selector-item" data-page="about" style="--stagger: 1">
-
-            <div class="selector-item-title">About</div>
-          </a>
-          <a href="gallery.html" class="selector-item" data-page="gallery" style="--stagger: 2">
-
-            <div class="selector-item-title">Gallery</div>
-          </a>
-        </div>
-      </div>
+<nav id="nav" aria-label="Primary">
+  <div class="nav-cluster nav-cluster--left">
+    <a href="index.html" class="nav-pill nav-pill--logo" aria-label="Home">
+      <img src="assets/images/Asset 2 - white.png" alt="rayul">
+    </a>
+  </div>
+  <div class="nav-cluster nav-cluster--right">
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="WORK">WORK</span></a>
+      <a href="gallery.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="GALLERY">GALLERY</span></a>
+      <a href="about.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="ABOUT">ABOUT</span></a>
     </div>
-    <a href="about.html" class="about-text" id="about-pill" aria-label="About rayul">rayul</a>
+    <button type="button" class="nav-pill nav-pill--toggle" id="nav-menu-toggle" aria-expanded="false" aria-controls="nav-links">
+      <span class="nav-pill-label">MENU</span>
+    </button>
+    <a href="about.html" class="nav-pill nav-pill--plus" aria-label="Contact"><span class="nav-dot"></span></a>
   </div>
 </nav>
+<a href="about.html" class="nav-pill nav-pill--corner" id="about-pill" aria-label="About rayul"><span class="nav-pill-label">RAYUL</span></a>
 
 <!-- Slides (injected by JS) -->
 <div id="slides-container"></div>
 
 <!-- Progress -->
 <div id="progress-track"><div id="progress-fill"></div></div>
-
-<!-- GSAP -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
 <script>
 /* ============================================================
@@ -1300,8 +826,6 @@ const allSlides = [landingSlide, ...films];
    BUILD SLIDES + DROPDOWN
    ============================================================ */
 const slidesContainer  = document.getElementById('slides-container');
-const selectorDropdown = document.getElementById('selector-dropdown');
-const selectorBackdrop = document.getElementById('selector-backdrop');
 
 allSlides.forEach((entry, i) => {
   const slide = document.createElement('div');
@@ -1313,11 +837,13 @@ allSlides.forEach((entry, i) => {
     slide.innerHTML = `
       <div class="video-bg" id="landing-video-bg">
         <iframe
-          src="https://player.vimeo.com/video/${entry.vimeoId}?${entry.vimeoHash ? 'h=' + entry.vimeoHash + '&' : ''}background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1"
+          id="player-${i}"
+          src="https://player.vimeo.com/video/${entry.vimeoId}?${entry.vimeoHash ? 'h=' + entry.vimeoHash + '&' : ''}background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1&player_id=player-${i}"
           frameborder="0"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           allowfullscreen
           loading="eager"
+          title="Showreel"
         ></iframe>
       </div>
       <div class="landing-overlay" id="landing-overlay">
@@ -1331,23 +857,34 @@ allSlides.forEach((entry, i) => {
       </div>
     `;
 
-    const landingIframe = slide.querySelector('iframe');
+    // Loader ring hides when the video actually starts playing
+    // (see the Vimeo 'play' event handler below) — 6s safety cap here.
     const landingLoader = slide.querySelector('.landing-loader');
-    const hideLandingLoader = () => landingLoader?.classList.add('is-hidden');
-    landingIframe?.addEventListener('load', hideLandingLoader, { once: true });
-    setTimeout(hideLandingLoader, 2500);
+    setTimeout(() => landingLoader?.classList.add('is-hidden'), 6000);
   } else {
     const film = entry;
-    // Eager-load landing (0) + first two film slides (1, 2); lazy-load the rest
-    const isEager = i <= 2;
-    const iframeSrc = `https://player.vimeo.com/video/${film.vimeoId}?background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1`;
+    // Eager-load landing (0) + first film slide (1); lazy-load the rest.
+    // The poster image means lazy slides are never black while loading.
+    const isEager = i <= 1;
+    const iframeSrc = `https://player.vimeo.com/video/${film.vimeoId}?background=1&autoplay=1&loop=1&muted=1&playsinline=1&dnt=1&player_id=player-${i}`;
     slide.innerHTML = `
       <div class="video-bg">
+        <img
+          class="video-poster"
+          src="https://vumbnail.com/${film.vimeoId}_large.jpg"
+          alt=""
+          aria-hidden="true"
+          ${isEager ? '' : 'loading="lazy"'}
+          decoding="async"
+          onerror="this.remove()"
+        >
         <iframe
+          id="player-${i}"
           ${isEager ? `src="${iframeSrc}"` : `data-src="${iframeSrc}"`}
           frameborder="0"
           allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
           allowfullscreen
+          title="${film.titleLine1}${film.titleLine2 ? ' ' + film.titleLine2 : ''}"
         ></iframe>
       </div>
       <div class="slide-content">
@@ -1413,196 +950,61 @@ allSlides.forEach((entry, i) => {
 })();
 
 /* ============================================================
-   SELECTOR
+   VIMEO PLAYER EVENTS — fade video in only once it's actually
+   playing (poster shows until then; no more black frames), and
+   pause players that are off-screen to free up bandwidth/CPU.
    ============================================================ */
-const selectorToggle  = document.getElementById('selector-toggle');
-const selectorTitleEl = document.getElementById('selector-title');
-const selectorMetaEl  = document.getElementById('selector-meta');
-const slideCounterEl  = document.getElementById('slide-counter');
-const progressFill    = document.getElementById('progress-fill');
-const selectorCloseEl = document.getElementById('selector-close');
+(function () {
+  // Reveal iframe when its video reports 'play'
+  window.addEventListener('message', (e) => {
+    if (typeof e.data !== 'string' || e.origin.indexOf('vimeo.com') === -1) return;
+    let data;
+    try { data = JSON.parse(e.data); } catch (err) { return; }
+    if (!data || !data.player_id) return;
+    const iframe = document.getElementById(data.player_id);
+    if (!iframe) return;
+
+    if (data.event === 'ready') {
+      iframe.contentWindow.postMessage(
+        JSON.stringify({ method: 'addEventListener', value: 'play' }), '*'
+      );
+    } else if (data.event === 'play') {
+      reveal(iframe);
+    }
+  });
+
+  function reveal(iframe) {
+    iframe.classList.add('is-playing');
+    if (iframe.closest('.slide--landing')) {
+      document.querySelector('.landing-loader')?.classList.add('is-hidden');
+    }
+  }
+
+  // Safety net — if the play event never arrives, reveal shortly after load
+  function attachFallback(iframe) {
+    iframe.addEventListener('load', () => {
+      if (!iframe.src) return; // ignore about:blank load on lazy iframes
+      setTimeout(() => reveal(iframe), 2000);
+    });
+  }
+  document.querySelectorAll('.video-bg iframe').forEach(attachFallback);
+})();
+
+/* Play only the active slide (+ its neighbours); pause everything else.
+   Keeps a dozen background videos from streaming simultaneously. */
+function setVideoPlayback(idx) {
+  document.querySelectorAll('.slide').forEach((slide, i) => {
+    const iframe = slide.querySelector('iframe');
+    if (!iframe || !iframe.src || !iframe.contentWindow) return;
+    const method = Math.abs(i - idx) <= 1 ? 'play' : 'pause';
+    iframe.contentWindow.postMessage(JSON.stringify({ method }), '*');
+  });
+}
+
+const progressFill = document.getElementById('progress-fill');
 
 let currentIndex = 0;
 
-function pad(n) { return String(n + 1).padStart(2, '0'); }
-
-function updateSelector(idx, prevIdx) {
-  const entry = allSlides[idx];
-  const newText = entry.isLanding
-    ? 'Home'
-    : (entry.navTitle || `${entry.titleLine1} ${entry.titleLine2}`);
-
-  const goingForward = prevIdx === undefined || idx > prevIdx;
-  const exitClass  = goingForward ? 'roll-exit-up'   : 'roll-exit-down';
-  const enterClass = goingForward ? 'roll-enter-up'  : 'roll-enter-down';
-
-  // Lock current width so the card doesn't snap
-  const fromW = selectorToggle.offsetWidth;
-  selectorToggle.style.transition = 'background 0.2s ease, border-color 0.2s ease';
-  selectorToggle.style.width = fromW + 'px';
-
-  // Cancel any in-flight animation cleanly
-  selectorTitleEl.classList.remove('roll-exit-up', 'roll-exit-down', 'roll-enter-up', 'roll-enter-down');
-  void selectorTitleEl.offsetWidth;
-
-  selectorTitleEl.classList.add(exitClass);
-  selectorTitleEl.addEventListener('animationend', () => {
-    selectorTitleEl.classList.remove(exitClass);
-    selectorTitleEl.textContent = newText;
-
-    // Measure the natural width with the new text
-    selectorToggle.style.transition = 'none';
-    selectorToggle.style.width = 'auto';
-    const toW = selectorToggle.offsetWidth;
-    // Snap back to fromW without transition, then animate forward
-    selectorToggle.style.width = fromW + 'px';
-    void selectorToggle.offsetWidth; // reflow
-    selectorToggle.style.transition = 'background 0.2s ease, border-color 0.2s ease, width 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-    selectorToggle.style.width = toW + 'px';
-
-    // Once width settles, release back to auto so it's not fixed
-    selectorToggle.addEventListener('transitionend', (e) => {
-      if (e.propertyName !== 'width') return;
-      selectorToggle.style.width = 'auto';
-      selectorToggle.style.transition = 'background 0.2s ease, border-color 0.2s ease';
-    }, { once: true });
-
-    void selectorTitleEl.offsetWidth;
-    selectorTitleEl.classList.add(enterClass);
-    selectorTitleEl.addEventListener('animationend', () => {
-      selectorTitleEl.classList.remove(enterClass);
-    }, { once: true });
-  }, { once: true });
-
-  if (!entry.isLanding) {
-    selectorMetaEl.innerHTML = `${entry.category.toUpperCase()} &nbsp;|&nbsp; ${entry.year} &nbsp;|&nbsp; ${entry.metaRole.toUpperCase()}`;
-  }
-  slideCounterEl.textContent = `${pad(idx)} / ${pad(allSlides.length - 1)}`;
-}
-
-/* ============================================================
-   TEXT SCRAMBLE
-   ============================================================ */
-const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*?';
-let _scrambleRaf = null;
-let _scrambleStoredText = '';
-
-function _cancelScramble() {
-  if (_scrambleRaf) { cancelAnimationFrame(_scrambleRaf); _scrambleRaf = null; }
-}
-
-function scrambleOut(el, duration = 320, onDone) {
-  _cancelScramble();
-  _scrambleStoredText = el.textContent;
-  const src = _scrambleStoredText;
-  const len = src.length;
-  const start = performance.now();
-
-  function tick(now) {
-    const t = Math.min((now - start) / duration, 1);
-    let result = '';
-    for (let i = 0; i < len; i++) {
-      if (src[i] === ' ') { result += ' '; continue; }
-      // chars clear left→right: later chars stay scrambled longer
-      const clearAt = 0.3 + (i / Math.max(len - 1, 1)) * 0.6; // 0.3 → 0.9
-      if (t >= clearAt) {
-        result += '\u00A0'; // non-breaking space keeps layout stable
-      } else {
-        result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-      }
-    }
-    el.textContent = result;
-    if (t < 1) {
-      _scrambleRaf = requestAnimationFrame(tick);
-    } else {
-      el.textContent = '\u00A0'.repeat(len);
-      if (onDone) onDone();
-    }
-  }
-  _scrambleRaf = requestAnimationFrame(tick);
-}
-
-function scrambleIn(el, target, duration = 360) {
-  _cancelScramble();
-  const len = target.length;
-  const start = performance.now();
-
-  function tick(now) {
-    const t = Math.min((now - start) / duration, 1);
-    let result = '';
-    for (let i = 0; i < len; i++) {
-      if (target[i] === ' ') { result += ' '; continue; }
-      // chars resolve left→right: earlier chars lock in first
-      const resolveAt = (i / Math.max(len - 1, 1)) * 0.7; // 0 → 0.7
-      if (t >= resolveAt + 0.3) {
-        result += target[i];
-      } else if (t >= resolveAt) {
-        result += SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-      } else {
-        result += '\u00A0';
-      }
-    }
-    el.textContent = result;
-    if (t < 1) {
-      _scrambleRaf = requestAnimationFrame(tick);
-    } else {
-      el.textContent = target;
-    }
-  }
-  _scrambleRaf = requestAnimationFrame(tick);
-}
-
-function openMenu() {
-  selectorToggle.classList.add('open');
-  // Scramble the title out as the dropdown opens
-  scrambleOut(selectorTitleEl, 300, () => {
-    // keep blank while menu is open — nothing to do here
-  });
-  selectorDropdown.classList.add('open');
-  selectorBackdrop.classList.add('open');
-}
-
-function closeMenu() {
-  selectorToggle.classList.remove('open');
-  selectorDropdown.classList.remove('open');
-  selectorBackdrop.classList.remove('open');
-  // Scramble the title back in after dropdown starts closing
-  const currentEntry = allSlides[currentIndex];
-  const restoreText = currentEntry
-    ? (currentEntry.isLanding ? 'Home' : (currentEntry.navTitle || `${currentEntry.titleLine1} ${currentEntry.titleLine2}`))
-    : (_scrambleStoredText || 'Home');
-  setTimeout(() => scrambleIn(selectorTitleEl, restoreText, 380), 80);
-}
-
-selectorToggle.addEventListener('click', () => {
-  if (selectorDropdown.classList.contains('open')) closeMenu();
-  else openMenu();
-});
-
-/* Mark active page in nav */
-(function() {
-  const isAbout = window.location.pathname.includes('about');
-  document.querySelectorAll('.selector-item[data-page]').forEach(item => {
-    const active = item.dataset.page === 'about' ? isAbout : !isAbout;
-    item.classList.toggle('active', active);
-  });
-})();
-
-selectorCloseEl.addEventListener('click', e => {
-  e.stopPropagation();
-  closeMenu();
-});
-
-selectorBackdrop.addEventListener('click', () => {
-  closeMenu();
-});
-
-document.addEventListener('click', e => {
-  if (!selectorDropdown.classList.contains('open')) return;
-  if (!e.target.closest('#selector-dropdown') && !e.target.closest('#selector-toggle')) {
-    closeMenu();
-  }
-});
 
 function scrollToSlide(idx) {
   document.querySelectorAll('.slide')[idx]?.scrollIntoView({ behavior: 'smooth' });
@@ -1618,11 +1020,7 @@ slidesContainer.addEventListener('scroll', () => {
   progressFill.style.width = (maxScroll > 0 ? (scrollTop / maxScroll) * 100 : 0) + '%';
 
   const newIdx = Math.min(Math.round(scrollTop / window.innerHeight), allSlides.length - 1);
-  if (newIdx !== currentIndex) {
-    const prevIndex = currentIndex;
-    currentIndex = newIdx;
-    updateSelector(currentIndex, prevIndex);
-  }
+  if (newIdx !== currentIndex) currentIndex = newIdx;
 
   /* parallax — disabled on mobile to prevent top-gap glitch */
   if (window.innerWidth > 768) {
@@ -1637,8 +1035,11 @@ slidesContainer.addEventListener('scroll', () => {
    ANIMATIONS — CSS class toggle
    ============================================================ */
 const slides = document.querySelectorAll('.slide');
+let lastActivated = -1;
 
 function activateSlide(idx) {
+  if (idx === lastActivated) return;
+  lastActivated = idx;
   slides.forEach((s, i) => {
     if (i === idx) {
       s.classList.add('is-active');
@@ -1646,6 +1047,7 @@ function activateSlide(idx) {
       s.classList.remove('is-active');
     }
   });
+  setVideoPlayback(idx);
 }
 
 /* Activate first slide on load */
@@ -1677,7 +1079,7 @@ document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; })
   requestAnimationFrame(tick);
 })();
 
-document.querySelectorAll('a, button, .selector-card, .selector-item').forEach(el => {
+document.querySelectorAll('a, button, .nav-pill').forEach(el => {
   el.addEventListener('mouseenter', () => cursor.classList.add('expanded'));
   el.addEventListener('mouseleave', () => cursor.classList.remove('expanded'));
 });
@@ -1693,191 +1095,312 @@ document.addEventListener('keydown', e => {
 });
 
 /* ============================================================
-   TERMINAL LOADING SCREEN
+   INTRO — LINES → RED CIRCLE → LANDING VIDEO
+   Blueprint lines etch onto black, a red circle is traced and
+   ignites, then blooms open organically to reveal the landing
+   video — sparkling red edge, faint grid, fullscreen handoff.
    ============================================================ */
 (function () {
-  const loader = document.getElementById('terminal-loader');
-  const output = document.getElementById('terminal-output');
+  const intro = document.getElementById('intro');
 
-  // Skip intro if already played this session (e.g. navigating back from About)
-  if (sessionStorage.getItem('introPlayed')) {
-    loader.remove();
+  // Skip intro if already played this session (e.g. navigating back),
+  // but always replay it on an explicit page refresh.
+  const navEntry = performance.getEntriesByType('navigation')[0];
+  const isReload = navEntry ? navEntry.type === 'reload' : false;
+  if (sessionStorage.getItem('introPlayed') && !isReload) {
+    intro.remove();
     document.body.style.overflow = '';
     return;
   }
 
-  // Start watching for the landing video immediately so we don't miss it
-  // loading while the terminal animation is still running.
-  let _landingReady = false;
-  const _landingIframe = document.querySelector('#landing-video-bg iframe');
-  const _landingReadyPromise = new Promise(resolve => {
-    if (!_landingIframe) { resolve(); return; }
-    _landingIframe.addEventListener('load', () => { _landingReady = true; resolve(); }, { once: true });
-    setTimeout(resolve, 8000); // absolute safety cap — never block forever
-  });
+  document.body.style.overflow = 'hidden';
 
-  // gap = ms to wait after the PREVIOUS line finishes before starting this one
-  const LINES = [
-    { text: '> INITIALIZING SYSTEM...',                              gap: 0,  charDelay: 10 },
-    { text: '> LOADING KERNEL MODULES         [<ok>OK</ok>]',       gap: 40, charDelay: 6  },
-    { text: '> MOUNTING FILE SYSTEMS          [<ok>OK</ok>]',       gap: 24, charDelay: 6  },
-    { text: '> ESTABLISHING SECURE CHANNEL...',                      gap: 32, charDelay: 8  },
-    { text: '> AUTH HANDSHAKE                 [<ok>OK</ok>]',       gap: 40, charDelay: 6  },
-    { text: '> <dim>TRACE_ID: 4f8c-b2a1-9d3e-0071</dim>',           gap: 20, charDelay: 5  },
-    { text: '> SCANNING ASSETS...',                                  gap: 24, charDelay: 8  },
-    { text: '> ASSETS VERIFIED                [<ok>OK</ok>]',       gap: 32, charDelay: 6  },
-    { text: '> <warn>WARNING: MEMORY LEAK DETECTED — PATCHING</warn>', gap: 24, charDelay: 7 },
-    { text: '> PATCH APPLIED                  [<ok>OK</ok>]',       gap: 64, charDelay: 6  },
-    { text: '> COMPILING RENDER PIPELINE...',                        gap: 32, charDelay: 8  },
-    { text: '> <dim>BUILD 2026.04.08-r11 — 0 ERRORS</dim>',         gap: 24, charDelay: 5  },
-    { text: '> ALL SYSTEMS NOMINAL            [<ok>OK</ok>]',       gap: 24, charDelay: 6  },
-    { text: '> <accent>LAUNCHING PORTFOLIO_</accent>',               gap: 48, charDelay: 11, keepCaret: true },
-  ];
-
-  function parseMarkup(raw) {
-    return raw
-      .replace(/<ok>(.*?)<\/ok>/g,         '<span class="t-ok">$1</span>')
-      .replace(/<warn>(.*?)<\/warn>/g,      '<span class="t-warn">$1</span>')
-      .replace(/<err>(.*?)<\/err>/g,        '<span class="t-err">$1</span>')
-      .replace(/<dim>(.*?)<\/dim>/g,        '<span class="t-dim">$1</span>')
-      .replace(/<accent>(.*?)<\/accent>/g,  '<span class="t-accent">$1</span>');
+  // Watch the landing video so the reveal never opens onto a black frame
+  let landingReady = false;
+  const landingIframe = document.querySelector('#landing-video-bg iframe');
+  if (landingIframe) {
+    landingIframe.addEventListener('load', () => { landingReady = true; }, { once: true });
+    setTimeout(() => { landingReady = true; }, 8000); // never block forever
+  } else {
+    landingReady = true;
   }
 
-  // Type one line char-by-char; caret moves with the typing cursor
-  function typeLine(el, raw, charDelay, keepCaret) {
-    const plain = raw.replace(/<[^>]+>/g, '');
-    const total = plain.length;
-    let typed   = 0;
+  function finishIntro() {
+    sessionStorage.setItem('introPlayed', '1');
+    document.body.style.overflow = '';
+    intro.style.transition = 'opacity 0.4s ease';
+    intro.style.opacity = '0';
+    setTimeout(() => intro.remove(), 450);
+  }
 
-    return new Promise(resolve => {
-      function next() {
-        typed++;
-        let visible = 0, result = '', i = 0;
-        while (i < raw.length && visible < typed) {
-          if (raw[i] === '<') {
-            const end = raw.indexOf('>', i);
-            result += raw.slice(i, end + 1);
-            i = end + 1;
+  // Reduced motion: quiet fade instead of the full sequence
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    intro.style.background = '#000';
+    intro.classList.add('title-in');
+    setTimeout(finishIntro, 1600);
+    return;
+  }
+
+  const canvas = document.getElementById('intro-canvas');
+  const ctx    = canvas.getContext('2d');
+  const DPR    = Math.min(window.devicePixelRatio || 1, 2);
+  let W = 0, H = 0;
+
+  function resize() {
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = Math.round(W * DPR);
+    canvas.height = Math.round(H * DPR);
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Paint the cover synchronously so the page never flashes through
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+
+  /* ----------------------------------------------------------
+     BLUEPRINT LINES (normalized coords, drawn progressively)
+     ---------------------------------------------------------- */
+  const LINES = [
+    { type: 'h',   y: 0.245, x0: 0.385, x1: 0.555, start: 0.10, dur: 0.70, c: '255,255,255', a: 0.55 },
+    { type: 'h',   y: 0.585, x0: 0.610, x1: 1.020, start: 0.30, dur: 0.80, c: '255,255,255', a: 0.32 },
+    { type: 'v',   x: 0.752, y0: 0.585, y1: 0.960, start: 0.55, dur: 0.70, c: '255,255,255', a: 0.28 },
+    { type: 'v',   x: 0.612, y0: 0.585, y1: 0.790, start: 0.50, dur: 0.55, c: '255,255,255', a: 0.22 },
+    { type: 'v',   x: 0.435, y0: 0.000, y1: 0.120, start: 0.15, dur: 0.50, c: '255,255,255', a: 0.22 },
+    { type: 'v',   x: 0.500, y0: 0.000, y1: 0.090, start: 0.25, dur: 0.50, c: '255,255,255', a: 0.18 },
+    { type: 'poly', pts: [[0.252,0.300],[0.252,0.262],[0.298,0.262],[0.298,0.285],[0.282,0.285]],
+                    start: 0.22, dur: 0.60, c: '255,15,0',    a: 0.85 },
+    { type: 'poly', pts: [[0.715,0.745],[0.715,0.700],[0.690,0.700],[0.690,0.722]],
+                    start: 0.62, dur: 0.50, c: '255,255,255', a: 0.40 },
+    { type: 'arc', cx: 1.040, cy: -0.180, r: 0.520, a0: 1.95,  a1: 2.75,  start: 0.35, dur: 0.90, c: '255,255,255', a: 0.28 },
+    { type: 'arc', cx: -0.050, cy: 1.100, r: 0.350, a0: -0.90, a1: -0.20, start: 0.55, dur: 0.80, c: '255,15,0',   a: 0.45 },
+  ];
+
+  function drawLines(t, fade) {
+    ctx.lineWidth = 1;
+    for (const L of LINES) {
+      const prog = Math.min(Math.max((t - L.start) / L.dur, 0), 1);
+      if (prog <= 0) continue;
+      ctx.strokeStyle = 'rgba(' + L.c + ',' + (L.a * fade).toFixed(3) + ')';
+      ctx.beginPath();
+      if (L.type === 'h') {
+        ctx.moveTo(L.x0 * W, L.y * H);
+        ctx.lineTo((L.x0 + (L.x1 - L.x0) * prog) * W, L.y * H);
+      } else if (L.type === 'v') {
+        ctx.moveTo(L.x * W, L.y0 * H);
+        ctx.lineTo(L.x * W, (L.y0 + (L.y1 - L.y0) * prog) * H);
+      } else if (L.type === 'arc') {
+        ctx.arc(L.cx * W, L.cy * H, L.r * W, L.a0, L.a0 + (L.a1 - L.a0) * prog);
+      } else if (L.type === 'poly') {
+        const pts = L.pts.map(p => [p[0] * W, p[1] * H]);
+        const segs = [];
+        let total = 0;
+        for (let i = 1; i < pts.length; i++) {
+          const d = Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
+          segs.push(d); total += d;
+        }
+        let remain = total * prog;
+        ctx.moveTo(pts[0][0], pts[0][1]);
+        for (let i = 1; i < pts.length && remain > 0; i++) {
+          const d = segs[i - 1];
+          if (remain >= d) {
+            ctx.lineTo(pts[i][0], pts[i][1]);
+            remain -= d;
           } else {
-            result += raw[i++];
-            visible++;
+            const f = remain / d;
+            ctx.lineTo(pts[i-1][0] + (pts[i][0] - pts[i-1][0]) * f,
+                       pts[i-1][1] + (pts[i][1] - pts[i-1][1]) * f);
+            remain = 0;
           }
         }
-        el.innerHTML = parseMarkup(result) + '<span class="t-caret"></span>';
-
-        if (typed < total) {
-          setTimeout(next, charDelay);
-        } else {
-          if (!keepCaret) el.innerHTML = parseMarkup(result);
-          resolve();
-        }
       }
-      setTimeout(next, charDelay);
+      ctx.stroke();
+    }
+  }
+
+  /* ----------------------------------------------------------
+     SPARK PARTICLES (the glittering red edge)
+     ---------------------------------------------------------- */
+  const sparks = [];
+  const SPARK_COLS = [
+    [255, 15, 0], [255, 15, 0], [255, 15, 0],
+    [255, 96, 48], [255, 96, 48],
+    [255, 236, 228],
+  ];
+
+  function spawnSpark(x, y, nx, ny, boost) {
+    const sp = (10 + Math.random() * 85) * (boost || 1);
+    const j  = (Math.random() - 0.5) * 60;
+    // bias spawn position into a band hugging the edge
+    const band = (Math.random() - 0.35) * 16;
+    sparks.push({
+      x: x + nx * band,
+      y: y + ny * band,
+      vx: nx * sp - ny * j,
+      vy: ny * sp + nx * j,
+      age: 0,
+      life: 0.16 + Math.random() * 0.45,
+      size: 0.6 + Math.random() * 2.4,
+      col: SPARK_COLS[(Math.random() * SPARK_COLS.length) | 0],
     });
   }
 
+  // Organic edge — circle radius modulated by drifting sine bands
+  function edgeR(th, R, amp, t) {
+    return R * (1 + amp * (0.55 * Math.sin(3 * th + t * 0.9 + 1.7)
+                         + 0.30 * Math.sin(5 * th - t * 1.4 + 0.6)
+                         + 0.15 * Math.sin(9 * th + t * 2.3)));
+  }
+
   /* ----------------------------------------------------------
-     DOT-MATRIX PERCENTAGE COUNTER
+     MAIN LOOP
      ---------------------------------------------------------- */
-  const canvas = document.getElementById('pct-canvas');
-  const ctx    = canvas.getContext('2d');
-  const DPR    = window.devicePixelRatio || 1;
+  const easeInOut = x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 
-  const PITCH  = 22;   // cell size in CSS px (dot centre-to-centre)
-  const DOT_R  = 7;    // dot radius in CSS px
-  const CHAR_W = 5 * PITCH;
-  const CHAR_G = 16;   // gap between characters
-  const COLS   = 4;    // "000%"
-  const CW     = COLS * CHAR_W + (COLS - 1) * CHAR_G;
-  const CH     = 7 * PITCH;
+  const TRACE_DUR = 0.5;   // red circle being traced
+  const BLOOM_DUR = 1.7;   // circle blooming open to fullscreen
+  const perfScale = Math.min(1, (window.innerWidth * window.innerHeight) / (1440 * 900));
 
-  canvas.style.width  = CW + 'px';
-  canvas.style.height = CH + 'px';
-  canvas.width  = Math.round(CW * DPR);
-  canvas.height = Math.round(CH * DPR);
-  ctx.scale(DPR, DPR);
+  const start = performance.now();
+  let last = start;
+  let bloomAt = null;
+  let titleShown = false, titleHidden = false, done = false;
 
-  // 5×7 dot-matrix glyph bitmaps
-  const GLYPHS = {
-    ' ': [[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,0,0,0,0]],
-    '0': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,1,1],[1,0,1,0,1],[1,1,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
-    '1': [[0,0,1,0,0],[0,1,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,0,1,0,0],[0,1,1,1,0]],
-    '2': [[0,1,1,1,0],[1,0,0,0,1],[0,0,0,0,1],[0,0,0,1,0],[0,0,1,0,0],[0,1,0,0,0],[1,1,1,1,1]],
-    '3': [[1,1,1,1,0],[0,0,0,0,1],[0,0,0,0,1],[0,1,1,1,0],[0,0,0,0,1],[0,0,0,0,1],[1,1,1,1,0]],
-    '4': [[0,0,0,1,0],[0,0,1,1,0],[0,1,0,1,0],[1,0,0,1,0],[1,1,1,1,1],[0,0,0,1,0],[0,0,0,1,0]],
-    '5': [[1,1,1,1,1],[1,0,0,0,0],[1,1,1,1,0],[0,0,0,0,1],[0,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
-    '6': [[0,0,1,1,0],[0,1,0,0,0],[1,0,0,0,0],[1,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
-    '7': [[1,1,1,1,1],[0,0,0,0,1],[0,0,0,1,0],[0,0,1,0,0],[0,1,0,0,0],[0,1,0,0,0],[0,1,0,0,0]],
-    '8': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,0]],
-    '9': [[0,1,1,1,0],[1,0,0,0,1],[1,0,0,0,1],[0,1,1,1,1],[0,0,0,0,1],[0,0,0,1,0],[0,1,1,0,0]],
-    '%': [[1,1,0,0,1],[1,1,0,1,0],[0,0,1,1,0],[0,0,1,0,0],[0,1,1,0,0],[0,1,0,1,1],[1,0,0,1,1]],
-  };
+  function frame(now) {
+    if (done) return;
+    const t  = (now - start) / 1000;
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
 
-  function drawPct(pct) {
-    ctx.clearRect(0, 0, CW, CH);
-    const str = String(Math.min(100, Math.floor(pct))).padStart(3, ' ') + '%';
-    for (let ci = 0; ci < str.length; ci++) {
-      const glyph = GLYPHS[str[ci]] || GLYPHS[' '];
-      const xOff  = ci * (CHAR_W + CHAR_G);
-      for (let row = 0; row < 7; row++) {
-        for (let col = 0; col < 5; col++) {
-          const on = glyph[row][col] === 1;
-          ctx.beginPath();
-          ctx.arc(
-            xOff + col * PITCH + PITCH / 2,
-            row  * PITCH + PITCH / 2,
-            DOT_R, 0, Math.PI * 2
-          );
-          ctx.fillStyle = on ? '#ffffff' : 'rgba(255,255,255,0.07)';
-          ctx.fill();
+    if (!titleShown && t > 0.45) { intro.classList.add('title-in'); titleShown = true; }
+    if (bloomAt === null && t >= 1.55 && landingReady) bloomAt = t;
+
+    const bt = bloomAt === null ? -1 : t - bloomAt;
+    const tracing  = bt >= 0 && bt < TRACE_DUR;
+    const blooming = bt >= TRACE_DUR;
+    const bp = blooming ? Math.min((bt - TRACE_DUR) / BLOOM_DUR, 1) : 0;
+    const p  = easeInOut(bp);
+
+    const minDim = Math.min(W, H);
+    const maxR = Math.hypot(W, H) / 2 * 1.04;
+    const r0   = minDim * 0.16;
+    const cx = W / 2, cy = H / 2;
+
+    // ---- black cover ----
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, W, H);
+
+    // ---- blueprint lines (fade out once the circle ignites) ----
+    const lineFade = bt < 0 ? 1 : Math.max(0, 1 - bt / 0.8);
+    if (lineFade > 0) drawLines(t, lineFade);
+
+    // ---- phase: trace the red circle ----
+    if (tracing) {
+      const tp = bt / TRACE_DUR;
+      const a1 = -Math.PI / 2 + tp * Math.PI * 2;
+      ctx.strokeStyle = 'rgba(255,15,0,0.9)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r0, -Math.PI / 2, a1);
+      ctx.stroke();
+      const hx = cx + Math.cos(a1) * r0;
+      const hy = cy + Math.sin(a1) * r0;
+      const n = Math.round(14 * perfScale) || 6;
+      for (let i = 0; i < n; i++) spawnSpark(hx, hy, Math.cos(a1), Math.sin(a1), 0.8);
+    }
+
+    // ---- phase: bloom open, revealing the landing video ----
+    if (blooming) {
+      const R   = r0 * 0.92 + (maxR - r0 * 0.92) * p;
+      const amp = 0.15 * Math.pow(1 - p, 1.4);
+
+      const blob = new Path2D();
+      const SEG = 90;
+      for (let i = 0; i <= SEG; i++) {
+        const th = (i / SEG) * Math.PI * 2;
+        const r  = edgeR(th, R, amp, t);
+        const x  = cx + Math.cos(th) * r;
+        const y  = cy + Math.sin(th) * r;
+        if (i === 0) blob.moveTo(x, y); else blob.lineTo(x, y);
+      }
+      blob.closePath();
+
+      // punch the hole — the landing video shows through
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fill(blob);
+      ctx.globalCompositeOperation = 'source-over';
+
+      if (p < 1) {
+        const rimFade = Math.min(1, (1 - p) * 2.2); // bright most of the way, clean at the end
+
+        // glowing red rim — soft halo + hot core
+        ctx.save();
+        ctx.strokeStyle = 'rgba(255,15,0,' + (0.85 * rimFade).toFixed(3) + ')';
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = 'rgb(255,15,0)';
+        ctx.shadowBlur = 28;
+        ctx.stroke(blob);
+        ctx.strokeStyle = 'rgba(255,210,200,' + (0.5 * rimFade).toFixed(3) + ')';
+        ctx.lineWidth = 1;
+        ctx.shadowBlur = 8;
+        ctx.stroke(blob);
+        ctx.restore();
+
+        // dense glittering band along the whole edge
+        const n = Math.round(Math.min(220, 70 + R * 0.16) * perfScale * rimFade) || 8;
+        for (let i = 0; i < n; i++) {
+          const th = Math.random() * Math.PI * 2;
+          const r  = edgeR(th, R, amp, t);
+          spawnSpark(cx + Math.cos(th) * r, cy + Math.sin(th) * r,
+                     Math.cos(th), Math.sin(th), 1.2);
         }
       }
-    }
-  }
 
-  // Animate 0 → 100 % over ~3.4 s (matches terminal sequence length)
-  const PCT_DURATION = 3400;
-  const pctStart = performance.now();
-  drawPct(0);
+      // faint structural grid over the reveal
+      const ga = 0.09 * Math.min(1, bp * 2.5) * (1 - bp);
+      if (ga > 0.004) {
+        ctx.strokeStyle = 'rgba(255,255,255,' + ga.toFixed(3) + ')';
+        ctx.lineWidth = 1;
+        for (const fx of [0.25, 0.5, 0.75]) {
+          ctx.beginPath(); ctx.moveTo(fx * W, 0); ctx.lineTo(fx * W, H); ctx.stroke();
+        }
+        for (const fy of [0.33, 0.66]) {
+          ctx.beginPath(); ctx.moveTo(0, fy * H); ctx.lineTo(W, fy * H); ctx.stroke();
+        }
+      }
 
-  function animatePct(now) {
-    const t     = Math.min((now - pctStart) / PCT_DURATION, 1);
-    const eased = 1 - Math.pow(1 - t, 2); // ease-out quad
-    drawPct(eased * 100);
-    if (t < 1) requestAnimationFrame(animatePct);
-  }
-  requestAnimationFrame(animatePct);
-
-  /* ----------------------------------------------------------
-     TERMINAL TYPING SEQUENCE
-     ---------------------------------------------------------- */
-  (async () => {
-    document.body.style.overflow = 'hidden';
-    let cursor = null;
-
-    for (let idx = 0; idx < LINES.length; idx++) {
-      const line = LINES[idx];
-      if (line.gap > 0) await new Promise(r => setTimeout(r, line.gap));
-      const el = document.createElement('div');
-      el.className = 't-line visible';
-      output.appendChild(el);
-      if (cursor) { cursor.remove(); cursor = null; }
-      await typeLine(el, line.text, line.charDelay, !!line.keepCaret);
-      if (line.keepCaret) cursor = el.querySelector('.t-caret');
+      if (!titleHidden && bp > 0.55) { intro.classList.add('title-out'); titleHidden = true; }
     }
 
-    drawPct(100); // ensure it lands on 100%
+    // ---- sparks ----
+    if (sparks.length) {
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        const s = sparks[i];
+        s.age += dt;
+        if (s.age >= s.life) { sparks.splice(i, 1); continue; }
+        s.x += s.vx * dt;
+        s.y += s.vy * dt;
+        const k = 1 - s.age / s.life;
+        ctx.fillStyle = 'rgba(' + s.col[0] + ',' + s.col[1] + ',' + s.col[2] + ',' + (k * 0.9).toFixed(3) + ')';
+        ctx.fillRect(s.x - s.size / 2, s.y - s.size / 2, s.size, s.size);
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
 
-    await new Promise(r => setTimeout(r, 550));
+    if (bp >= 1 && sparks.length === 0) {
+      done = true;
+      finishIntro();
+      return;
+    }
+    requestAnimationFrame(frame);
+  }
 
-    // If the landing video hasn't loaded yet, hold the terminal up until it does
-    if (!_landingReady) await _landingReadyPromise;
-
-    sessionStorage.setItem('introPlayed', '1');
-    loader.classList.add('fade-out');
-    document.body.style.overflow = '';
-    loader.addEventListener('transitionend', () => loader.remove(), { once: true });
-  })();
+  requestAnimationFrame(frame);
 })();
 
 </script>
