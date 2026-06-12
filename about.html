@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js" defer></script>
 <style>
 
 /* ============================================================
@@ -100,40 +102,6 @@ body::after {
 }
 #top-fade    { top: 0;    background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, transparent 100%); }
 #bottom-fade { bottom: 0; background: linear-gradient(to top,   rgba(0,0,0,0.92) 0%, transparent 100%); }
-
-/* ============================================================
-   NAVIGATION
-   ============================================================ */
-#nav {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 200;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 32px 34px;
-}
-
-.nav-logo {
-  text-decoration: none;
-  color: inherit;
-  display: inline-block;
-  line-height: 0;
-}
-.nav-logo img { height: 34px; width: auto; }
-
-.nav-link {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  letter-spacing: 1.8px;
-  color: var(--cream);
-  text-decoration: none;
-  text-transform: lowercase;
-  opacity: 0.9;
-  cursor: none;
-  transition: opacity 0.2s ease;
-}
-.nav-link:hover { opacity: 1; }
 
 /* ============================================================
    MAIN LAYOUT — two columns, full viewport
@@ -404,8 +372,6 @@ body::after {
 @media (max-width: 768px) {
   body { height: auto; overflow: auto; }
 
-  #nav { padding: 18px 20px; }
-  .nav-logo img { height: 20px; }
   #top-fade, #bottom-fade { height: 110px; }
 
   .about-wrap {
@@ -456,11 +422,24 @@ body::after {
 
 <!-- Navigation -->
 <nav id="nav" aria-label="Primary">
-  <a href="index.html" class="nav-logo" aria-label="Home">
-    <img src="assets/images/Asset 2 - white.png" alt="">
-  </a>
-  <a href="index.html" class="nav-link">work</a>
+  <div class="nav-cluster nav-cluster--left">
+    <a href="index.html" class="nav-pill nav-pill--logo" aria-label="Home">
+      <img src="assets/images/Asset 2 - white.png" alt="rayul">
+    </a>
+  </div>
+  <div class="nav-cluster nav-cluster--right">
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="WORK">WORK</span></a>
+      <a href="gallery.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="GALLERY">GALLERY</span></a>
+      <a href="about.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="ABOUT">ABOUT</span></a>
+    </div>
+    <button type="button" class="nav-pill nav-pill--toggle" id="nav-menu-toggle" aria-expanded="false" aria-controls="nav-links">
+      <span class="nav-pill-label">MENU</span>
+    </button>
+    <a href="about.html" class="nav-pill nav-pill--plus" aria-label="Contact"><span class="nav-dot"></span></a>
+  </div>
 </nav>
+<a href="about.html" class="nav-pill nav-pill--corner" id="about-pill" aria-label="About rayul"><span class="nav-pill-label">RAYUL</span></a>
 
 <!-- Main -->
 <main class="about-wrap">
@@ -538,7 +517,7 @@ body::after {
     <div class="contact-card">
       <div class="contact-card-label">Open to work</div>
       <div class="contact-card-name">rayul</div>
-      <a href="mailto:" class="contact-card-btn">Get in touch &rarr;</a>
+      <a href="mailto:rayul.vfx@gmail.com" class="contact-card-btn">Get in touch &rarr;</a>
     </div>
 
   </div>

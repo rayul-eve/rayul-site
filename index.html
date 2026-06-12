@@ -139,11 +139,17 @@ body::after {
   transform: translate(-50%, -50%);
   will-change: left, top;
   transition: width 0.2s ease, height 0.2s ease;
+  animation: navDotPulse 2.4s ease-in-out infinite;
 }
 
 #cursor.expanded {
   width: 28px;
   height: 28px;
+  animation: none; /* solid while hovering interactive elements, like the nav dot */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cursor { animation: none !important; }
 }
 
 /* ============================================================
@@ -591,7 +597,7 @@ body::after {
 }
 
 /* ============================================================
-   INTRO — LINES → RED CIRCLE → LANDING VIDEO
+   INTRO — LOGO ON BLACK → RED CIRCLE → LANDING VIDEO
    ============================================================ */
 #intro {
   position: fixed;
@@ -637,7 +643,7 @@ body::after {
 </head>
 <body>
 
-<!-- Intro — lines → red circle → landing video -->
+<!-- Intro — logo on black → red circle → landing video -->
 <div id="intro" aria-hidden="true">
   <canvas id="intro-canvas"></canvas>
   <div id="intro-title">
@@ -664,16 +670,16 @@ body::after {
   <div class="nav-cluster nav-cluster--right">
     <div class="nav-links" id="nav-links">
       <a href="index.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="WORK">WORK</span></a>
-      <a href="gallery.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="GALLERY">GALLERY</span></a>
-      <a href="about.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="ABOUT">ABOUT</span></a>
+      <a href="gallery-v3.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="GALLERY">GALLERY</span></a>
+      <a href="about-v2.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="ABOUT">ABOUT</span></a>
     </div>
     <button type="button" class="nav-pill nav-pill--toggle" id="nav-menu-toggle" aria-expanded="false" aria-controls="nav-links">
       <span class="nav-pill-label">MENU</span>
     </button>
-    <a href="about.html" class="nav-pill nav-pill--plus" aria-label="Contact"><span class="nav-dot"></span></a>
+    <a href="about-v2.html" class="nav-pill nav-pill--plus" aria-label="Contact"><span class="nav-dot"></span></a>
   </div>
 </nav>
-<a href="about.html" class="nav-pill nav-pill--corner" id="about-pill" aria-label="About rayul"><span class="nav-pill-label">RAYUL</span></a>
+<a href="about-v2.html" class="nav-pill nav-pill--corner" id="about-pill" aria-label="About rayul"><span class="nav-pill-label">RAYUL</span></a>
 
 <!-- Slides (injected by JS) -->
 <div id="slides-container"></div>
@@ -1095,10 +1101,10 @@ document.addEventListener('keydown', e => {
 });
 
 /* ============================================================
-   INTRO — LINES → RED CIRCLE → LANDING VIDEO
-   Blueprint lines etch onto black, a red circle is traced and
+   INTRO — LOGO ON BLACK → RED CIRCLE → LANDING VIDEO
+   The logo fades in on black, a red circle is traced and
    ignites, then blooms open organically to reveal the landing
-   video — sparkling red edge, faint grid, fullscreen handoff.
+   video — sparkling red edge, fullscreen handoff.
    ============================================================ */
 (function () {
   const intro = document.getElementById('intro');
@@ -1159,66 +1165,6 @@ document.addEventListener('keydown', e => {
   // Paint the cover synchronously so the page never flashes through
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, W, H);
-
-  /* ----------------------------------------------------------
-     BLUEPRINT LINES (normalized coords, drawn progressively)
-     ---------------------------------------------------------- */
-  const LINES = [
-    { type: 'h',   y: 0.245, x0: 0.385, x1: 0.555, start: 0.10, dur: 0.70, c: '255,255,255', a: 0.55 },
-    { type: 'h',   y: 0.585, x0: 0.610, x1: 1.020, start: 0.30, dur: 0.80, c: '255,255,255', a: 0.32 },
-    { type: 'v',   x: 0.752, y0: 0.585, y1: 0.960, start: 0.55, dur: 0.70, c: '255,255,255', a: 0.28 },
-    { type: 'v',   x: 0.612, y0: 0.585, y1: 0.790, start: 0.50, dur: 0.55, c: '255,255,255', a: 0.22 },
-    { type: 'v',   x: 0.435, y0: 0.000, y1: 0.120, start: 0.15, dur: 0.50, c: '255,255,255', a: 0.22 },
-    { type: 'v',   x: 0.500, y0: 0.000, y1: 0.090, start: 0.25, dur: 0.50, c: '255,255,255', a: 0.18 },
-    { type: 'poly', pts: [[0.252,0.300],[0.252,0.262],[0.298,0.262],[0.298,0.285],[0.282,0.285]],
-                    start: 0.22, dur: 0.60, c: '255,15,0',    a: 0.85 },
-    { type: 'poly', pts: [[0.715,0.745],[0.715,0.700],[0.690,0.700],[0.690,0.722]],
-                    start: 0.62, dur: 0.50, c: '255,255,255', a: 0.40 },
-    { type: 'arc', cx: 1.040, cy: -0.180, r: 0.520, a0: 1.95,  a1: 2.75,  start: 0.35, dur: 0.90, c: '255,255,255', a: 0.28 },
-    { type: 'arc', cx: -0.050, cy: 1.100, r: 0.350, a0: -0.90, a1: -0.20, start: 0.55, dur: 0.80, c: '255,15,0',   a: 0.45 },
-  ];
-
-  function drawLines(t, fade) {
-    ctx.lineWidth = 1;
-    for (const L of LINES) {
-      const prog = Math.min(Math.max((t - L.start) / L.dur, 0), 1);
-      if (prog <= 0) continue;
-      ctx.strokeStyle = 'rgba(' + L.c + ',' + (L.a * fade).toFixed(3) + ')';
-      ctx.beginPath();
-      if (L.type === 'h') {
-        ctx.moveTo(L.x0 * W, L.y * H);
-        ctx.lineTo((L.x0 + (L.x1 - L.x0) * prog) * W, L.y * H);
-      } else if (L.type === 'v') {
-        ctx.moveTo(L.x * W, L.y0 * H);
-        ctx.lineTo(L.x * W, (L.y0 + (L.y1 - L.y0) * prog) * H);
-      } else if (L.type === 'arc') {
-        ctx.arc(L.cx * W, L.cy * H, L.r * W, L.a0, L.a0 + (L.a1 - L.a0) * prog);
-      } else if (L.type === 'poly') {
-        const pts = L.pts.map(p => [p[0] * W, p[1] * H]);
-        const segs = [];
-        let total = 0;
-        for (let i = 1; i < pts.length; i++) {
-          const d = Math.hypot(pts[i][0] - pts[i-1][0], pts[i][1] - pts[i-1][1]);
-          segs.push(d); total += d;
-        }
-        let remain = total * prog;
-        ctx.moveTo(pts[0][0], pts[0][1]);
-        for (let i = 1; i < pts.length && remain > 0; i++) {
-          const d = segs[i - 1];
-          if (remain >= d) {
-            ctx.lineTo(pts[i][0], pts[i][1]);
-            remain -= d;
-          } else {
-            const f = remain / d;
-            ctx.lineTo(pts[i-1][0] + (pts[i][0] - pts[i-1][0]) * f,
-                       pts[i-1][1] + (pts[i][1] - pts[i-1][1]) * f);
-            remain = 0;
-          }
-        }
-      }
-      ctx.stroke();
-    }
-  }
 
   /* ----------------------------------------------------------
      SPARK PARTICLES (the glittering red edge)
@@ -1294,10 +1240,6 @@ document.addEventListener('keydown', e => {
     ctx.fillStyle = '#000';
     ctx.fillRect(0, 0, W, H);
 
-    // ---- blueprint lines (fade out once the circle ignites) ----
-    const lineFade = bt < 0 ? 1 : Math.max(0, 1 - bt / 0.8);
-    if (lineFade > 0) drawLines(t, lineFade);
-
     // ---- phase: trace the red circle ----
     if (tracing) {
       const tp = bt / TRACE_DUR;
@@ -1357,19 +1299,6 @@ document.addEventListener('keydown', e => {
           const r  = edgeR(th, R, amp, t);
           spawnSpark(cx + Math.cos(th) * r, cy + Math.sin(th) * r,
                      Math.cos(th), Math.sin(th), 1.2);
-        }
-      }
-
-      // faint structural grid over the reveal
-      const ga = 0.09 * Math.min(1, bp * 2.5) * (1 - bp);
-      if (ga > 0.004) {
-        ctx.strokeStyle = 'rgba(255,255,255,' + ga.toFixed(3) + ')';
-        ctx.lineWidth = 1;
-        for (const fx of [0.25, 0.5, 0.75]) {
-          ctx.beginPath(); ctx.moveTo(fx * W, 0); ctx.lineTo(fx * W, H); ctx.stroke();
-        }
-        for (const fy of [0.33, 0.66]) {
-          ctx.beginPath(); ctx.moveTo(0, fy * H); ctx.lineTo(W, fy * H); ctx.stroke();
         }
       }
 

@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rayul — About</title>
+<link rel="icon" type="image/png" href="assets/images/favicon - white.png">
+<link rel="apple-touch-icon" href="assets/images/favicon - white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js" defer></script>
+<style>
+
+/* ============================================================
+   RESET & ROOT
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cream: rgb(250, 247, 239);
+  --black: #000000;
+  --red:   rgb(255, 15, 0);
+  --gray:  rgb(66, 66, 66);
+  --font-sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --line: rgba(250, 247, 239, 0.14);
+  --pad-x: 61px;
+}
+
+@keyframes titleUp {
+  from { transform: translateY(110%); }
+  to   { transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%       { transform: scale(0.75); opacity: 0.6; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--cream);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+::selection { background: var(--red); color: var(--black); }
+
+/* ============================================================
+   GRAIN OVERLAY
+   ============================================================ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+#cursor {
+  position: fixed;
+  width: 14px;
+  height: 14px;
+  background: var(--red);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+  transition: width 0.2s ease, height 0.2s ease;
+  animation: navDotPulse 2.4s ease-in-out infinite;
+}
+#cursor.expanded { width: 28px; height: 28px; animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  #cursor { animation: none !important; }
+  .marquee-track { animation: none !important; }
+}
+
+/* ============================================================
+   TOP / BOTTOM GRADIENT FADES
+   ============================================================ */
+#top-fade, #bottom-fade {
+  position: fixed;
+  left: 0; width: 100%;
+  height: 160px;
+  pointer-events: none;
+  z-index: 20;
+}
+#top-fade    { top: 0;    background: linear-gradient(to bottom, rgba(0,0,0,0.92) 0%, transparent 100%); }
+#bottom-fade { bottom: 0; background: linear-gradient(to top,   rgba(0,0,0,0.92) 0%, transparent 100%); }
+
+/* ============================================================
+   SCROLL REVEAL (shared)
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--d, 0s);
+}
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ============================================================
+   SECTION SCAFFOLD
+   ============================================================ */
+section { position: relative; z-index: 2; }
+
+.eyebrow {
+  font-family: var(--font-serif);
+  font-size: 10px;
+  letter-spacing: 3.4px;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 128px var(--pad-x) 64px;
+}
+
+.hero-inner { will-change: transform; }
+
+.hero .eyebrow { animation: fadeUp 0.6s ease 0.3s both; margin-bottom: clamp(24px, 4vh, 48px); }
+
+.name-line-wrap {
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  line-height: 0.85;
+}
+
+.name-line {
+  font-family: var(--font-sans);
+  font-size: clamp(72px, 11vw, 168px);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  text-transform: lowercase;
+  color: var(--cream);
+  display: block;
+  animation: titleUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+}
+
+.name-dot {
+  display: inline-block;
+  width: clamp(13px, 1.4vw, 22px);
+  height: clamp(13px, 1.4vw, 22px);
+  background: var(--red);
+  border-radius: 50%;
+  margin-left: 10px;
+  vertical-align: super;
+  flex-shrink: 0;
+  animation: titleUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both,
+             dotPulse 2.8s ease-in-out 1.6s infinite;
+}
+
+.hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 48px;
+  margin-top: clamp(32px, 6vh, 64px);
+}
+
+.about-bio {
+  font-family: var(--font-sans);
+  font-size: clamp(15px, 1.3vw, 20px);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-weight: 400;
+  color: rgba(250, 247, 239, 0.88);
+  max-width: 560px;
+  animation: fadeUp 0.7s ease 0.55s both;
+}
+
+.hero-services {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  animation: fadeUp 0.7s ease 0.65s both;
+}
+
+.service-item {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.45);
+  text-align: right;
+  line-height: 1.4;
+}
+
+.scroll-cue {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: clamp(36px, 6vh, 60px);
+  font-size: 8px;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.35);
+  animation: fadeUp 0.7s ease 0.9s both;
+}
+.scroll-cue-line {
+  width: 36px;
+  height: 1px;
+  background: rgba(250, 247, 239, 0.25);
+}
+
+/* ============================================================
+   HERO PHOTO — sits below the name, dissolves into the black
+   ============================================================ */
+.bio-photo {
+  width: 100%;
+  max-width: 520px;
+  margin-top: clamp(28px, 5vh, 56px);
+  animation: fadeUp 0.8s ease 0.45s both;
+}
+
+.bio-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-mask-image: radial-gradient(ellipse 78% 78% at 50% 46%, #000 55%, transparent 98%);
+          mask-image: radial-gradient(ellipse 78% 78% at 50% 46%, #000 55%, transparent 98%);
+}
+
+/* ============================================================
+   LOGO MARQUEE
+   ============================================================ */
+.clients {
+  padding: clamp(70px, 12vh, 130px) 0;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.clients-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 var(--pad-x);
+  margin-bottom: clamp(44px, 7vh, 72px);
+}
+
+.clients-count {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(250, 247, 239, 0.35);
+}
+
+.marquee {
+  position: relative;
+  width: 100%;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+  will-change: transform;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+
+.marquee-item {
+  flex-shrink: 0;
+  padding: 0 clamp(34px, 4.5vw, 76px);
+}
+
+.marquee-item img {
+  display: block;
+  height: clamp(26px, 3vw, 40px);
+  width: auto;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+.marquee-item:hover img { opacity: 1; }
+
+/* ============================================================
+   EXPERIENCE TABLE
+   ============================================================ */
+.experience {
+  padding: clamp(80px, 14vh, 150px) var(--pad-x) clamp(90px, 14vh, 160px);
+  border-top: 1px solid var(--line);
+}
+
+.exp-head { margin-bottom: clamp(44px, 7vh, 80px); }
+
+.exp-lead {
+  font-family: var(--font-sans);
+  font-size: clamp(18px, 1.9vw, 28px);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: rgba(250, 247, 239, 0.88);
+  max-width: 760px;
+  margin-top: 28px;
+}
+.exp-lead em { font-style: normal; }
+
+.exp-table { width: 100%; }
+
+.exp-row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.8fr 0.7fr;
+  gap: 24px;
+  align-items: baseline;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  transition: padding-left 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.exp-row:first-of-type { border-top: 1px solid var(--line); }
+
+.exp-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  transform: translateY(-50%) scale(0);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.exp-row:hover { padding-left: 22px; }
+.exp-row:hover::before { transform: translateY(-50%) scale(1); }
+
+.exp-role {
+  font-family: var(--font-sans);
+  font-size: clamp(15px, 1.25vw, 19px);
+  color: var(--cream);
+  letter-spacing: 0.2px;
+  transition: color 0.3s ease;
+}
+
+.exp-org {
+  font-family: var(--font-sans);
+  font-size: clamp(13px, 1vw, 16px);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(250, 247, 239, 0.6);
+}
+
+.exp-focus {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.6;
+  color: rgba(250, 247, 239, 0.4);
+}
+
+.exp-year {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: rgba(250, 247, 239, 0.55);
+  text-align: right;
+  white-space: nowrap;
+}
+.exp-year .now { color: var(--red); }
+
+/* ============================================================
+   CONTACT FOOTER
+   ============================================================ */
+.contact {
+  padding: clamp(90px, 16vh, 170px) var(--pad-x) 120px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(36px, 6vh, 56px);
+}
+
+.contact-line {
+  font-family: var(--font-sans);
+  font-size: clamp(40px, 6.5vw, 104px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-transform: lowercase;
+  color: var(--cream);
+  text-decoration: none;
+  cursor: none;
+  display: inline-flex;
+  align-items: flex-start;
+  width: fit-content;
+  transition: opacity 0.3s ease;
+}
+.contact-line:hover { opacity: 0.65; }
+.contact-line .name-dot { margin-left: 8px; }
+
+.contact-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.meta-item { display: flex; flex-direction: column; gap: 7px; }
+
+.meta-label {
+  font-family: var(--font-sans);
+  font-size: 8px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.55;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(250,247,239,0.25);
+  white-space: nowrap;
+}
+
+.meta-value {
+  font-family: var(--font-sans);
+  font-size: 18px;
+  color: var(--cream);
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.social-links { display: flex; gap: 18px; align-items: center; }
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(250, 247, 239, 0.45);
+  text-decoration: none;
+  cursor: none;
+  transition: color 0.2s ease;
+}
+.social-link:hover { color: rgba(250, 247, 239, 0.9); }
+.social-link svg { display: block; }
+
+/* ============================================================
+   MOBILE  ≤ 768px
+   ============================================================ */
+@media (max-width: 768px) {
+  :root { --pad-x: 22px; }
+
+  #top-fade, #bottom-fade { height: 100px; }
+
+  .hero { padding-top: 104px; padding-bottom: 52px; }
+
+  .bio-photo { max-width: 320px; margin-top: 24px; }
+
+  .hero-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+  }
+
+  .hero-services { align-items: flex-start; }
+  .service-item { text-align: left; }
+
+  .name-line { font-size: clamp(56px, 16vw, 88px); }
+
+
+  .exp-row {
+    grid-template-columns: 1fr auto;
+    gap: 6px 16px;
+    padding: 22px 0;
+  }
+  .exp-role  { grid-column: 1; }
+  .exp-year  { grid-column: 2; grid-row: 1; }
+  .exp-org   { grid-column: 1 / -1; }
+  .exp-focus { grid-column: 1 / -1; margin-top: 4px; }
+  .exp-row:hover { padding-left: 0; }
+  .exp-row::before { display: none; }
+
+  .contact-foot { flex-direction: column; align-items: flex-start; gap: 28px; }
+}
+
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+
+<!-- Fades -->
+<div id="top-fade"></div>
+<div id="bottom-fade"></div>
+
+<!-- Navigation -->
+<nav id="nav" aria-label="Primary">
+  <div class="nav-cluster nav-cluster--left">
+    <a href="index.html" class="nav-pill nav-pill--logo" aria-label="Home">
+      <img src="assets/images/Asset 2 - white.png" alt="rayul">
+    </a>
+  </div>
+  <div class="nav-cluster nav-cluster--right">
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="WORK">WORK</span></a>
+      <a href="gallery-v3.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="GALLERY">GALLERY</span></a>
+      <a href="about-v2.html" class="nav-pill nav-pill--link"><span class="nav-pill-label" data-label="ABOUT">ABOUT</span></a>
+    </div>
+    <button type="button" class="nav-pill nav-pill--toggle" id="nav-menu-toggle" aria-expanded="false" aria-controls="nav-links">
+      <span class="nav-pill-label">MENU</span>
+    </button>
+    <a href="about-v2.html" class="nav-pill nav-pill--plus" aria-label="Contact"><span class="nav-dot"></span></a>
+  </div>
+</nav>
+<a href="about-v2.html" class="nav-pill nav-pill--corner" id="about-pill" aria-label="About rayul"><span class="nav-pill-label">RAYUL</span></a>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="hero-inner" id="hero-inner">
+    <span class="eyebrow">Director &amp; Editor</span>
+
+    <div class="name-line-wrap">
+      <span class="name-line">rayul</span><span class="name-dot"></span>
+    </div>
+
+    <figure class="bio-photo">
+      <img src="assets/NORBY.jpeg" alt="Thermal portrait of rayul">
+    </figure>
+
+    <div class="hero-row">
+      <p class="about-bio">
+        I'm a director and editor specializing in cinematic, fashion driven visuals with a strong narrative focus.
+      </p>
+      <div class="hero-services" aria-label="Disciplines">
+        <span class="service-item">Colour Grading</span>
+        <span class="service-item">Cinematography</span>
+        <span class="service-item">Direction</span>
+        <span class="service-item">Editing</span>
+      </div>
+    </div>
+
+    <div class="scroll-cue">
+      <span class="scroll-cue-line"></span>
+      <span>Scroll</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CLIENTS — LOGO MARQUEE
+     ============================================================ -->
+<section class="clients">
+  <div class="clients-head">
+    <span class="eyebrow reveal">Selected Clients</span>
+    <span class="clients-count reveal" style="--d: 0.1s;">&amp; collaborators</span>
+  </div>
+
+  <div class="marquee reveal" style="--d: 0.15s;" aria-label="Client logos">
+    <div class="marquee-track" id="marquee-track">
+      <!-- set 1 -->
+      <div class="marquee-item"><img src="assets/logos/white/sony.png" alt="Sony"></div>
+      <div class="marquee-item"><img src="assets/logos/white/spencerbadu.png" alt="Spencer Badu"></div>
+      <div class="marquee-item"><img src="assets/logos/white/vitaly.png" alt="Vitaly"></div>
+      <div class="marquee-item"><img src="assets/logos/white/acronym.png" alt="Acronym"></div>
+      <div class="marquee-item"><img src="assets/logos/white/4ye.png" alt="4YE"></div>
+      <div class="marquee-item"><img src="assets/logos/white/artscape.png" alt="Toronto Artscape Foundation"></div>
+      <!-- set 2 (duplicate for seamless loop) -->
+      <div class="marquee-item" aria-hidden="true"><img src="assets/logos/white/sony.png" alt=""></div>
+      <div class="marquee-item" aria-hidden="true"><img src="assets/logos/white/spencerbadu.png" alt=""></div>
+      <div class="marquee-item" aria-hidden="true"><img src="assets/logos/white/vitaly.png" alt=""></div>
+      <div class="marquee-item" aria-hidden="true"><img src="assets/logos/white/acronym.png" alt=""></div>
+      <div class="marquee-item" aria-hidden="true"><img src="assets/logos/white/4ye.png" alt=""></div>
+      <div class="marquee-item" aria-hidden="true"><img src="assets/logos/white/artscape.png" alt=""></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     EXPERIENCE
+     ============================================================ -->
+<section class="experience">
+  <div class="exp-head">
+    <span class="eyebrow reveal">Experience</span>
+    <p class="exp-lead reveal" style="--d: 0.1s;">
+      Work spanning <em>direction, post-production, and education</em>.
+    </p>
+  </div>
+
+  <div class="exp-table">
+
+    <div class="exp-row reveal">
+      <span class="exp-role">Freelance Director</span>
+      <span class="exp-org">EV3</span>
+      <span class="exp-focus">Music Videos · Fashion Films · Commercials · Live Shows</span>
+      <span class="exp-year">2018 — <span class="now">Now</span></span>
+    </div>
+
+    <div class="exp-row reveal" style="--d: 0.07s;">
+      <span class="exp-role">Instructor</span>
+      <span class="exp-org">University of Toronto</span>
+      <span class="exp-focus">Video Production · Visual Storytelling</span>
+      <span class="exp-year">2024 — <span class="now">Now</span></span>
+    </div>
+
+    <div class="exp-row reveal" style="--d: 0.14s;">
+      <span class="exp-role">Audio Visual Technician</span>
+      <span class="exp-org">University of Toronto</span>
+      <span class="exp-focus">Camera Operation · AV Systems</span>
+      <span class="exp-year">2026 — <span class="now">Now</span></span>
+    </div>
+
+    <div class="exp-row reveal" style="--d: 0.21s;">
+      <span class="exp-role">Video Editor</span>
+      <span class="exp-org">Vitaly</span>
+      <span class="exp-focus">Social Campaigns · Post-Production</span>
+      <span class="exp-year">2025</span>
+    </div>
+
+    <div class="exp-row reveal" style="--d: 0.28s;">
+      <span class="exp-role">Junior Technologist</span>
+      <span class="exp-org">Sheridan College</span>
+      <span class="exp-focus">Film &amp; Media Production Support</span>
+      <span class="exp-year">2025</span>
+    </div>
+
+    <div class="exp-row reveal" style="--d: 0.35s;">
+      <span class="exp-role">Resident Artist</span>
+      <span class="exp-org">Artscape</span>
+      <span class="exp-focus">Nuit Blanche 2022 · Ray Ferris Creative Incubator</span>
+      <span class="exp-year">2022</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT
+     ============================================================ -->
+<section class="contact">
+  <div class="reveal">
+    <span class="eyebrow">Open to work</span>
+  </div>
+
+  <a href="mailto:rayul.vfx@gmail.com" class="contact-line reveal" style="--d: 0.1s;">
+    get in touch<span class="name-dot"></span>
+  </a>
+
+  <div class="contact-foot reveal" style="--d: 0.2s;">
+    <div class="meta-item">
+      <span class="meta-label">Based in</span>
+      <span class="meta-value">Toronto</span>
+    </div>
+
+    <div class="social-links">
+      <!-- Vimeo -->
+      <a href="https://vimeo.com/rayul" class="social-link" aria-label="Vimeo" target="_blank" rel="noopener noreferrer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M23 7.1c-.1 2.2-1.6 5.3-4.6 9.1C15.3 20.1 12.7 22 10.5 22c-1.4 0-2.5-1.3-3.5-3.8L5.3 12C4.6 9.5 3.8 8.2 3 8.2c-.2 0-.8.4-1.9 1.1L0 8c1.2-1.1 2.4-2.1 3.6-3.2C5.2 3.4 6.4 2.9 7.2 2.8c1.9-.2 3.1 1.1 3.5 3.9.5 3 .8 4.8 1 5.6.5 2.4 1.1 3.6 1.8 3.6.5 0 1.3-.8 2.3-2.4 1-1.6 1.6-2.8 1.6-3.7 0-1.7-.7-2.5-2-2.5-.7 0-1.4.2-2.1.5 1.4-4.6 4.1-6.8 8-6.6C23.4 1.4 23.1 3.9 23 7.1z" fill="currentColor"/>
+        </svg>
+      </a>
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/rayul.vfx/" class="social-link" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" fill="none"/>
+          <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/>
+        </svg>
+      </a>
+      <!-- Soundcloud -->
+      <a href="https://soundcloud.com/rayul-vfx" class="social-link" aria-label="Soundcloud" target="_blank" rel="noopener noreferrer">
+        <svg width="22" height="20" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 11.5c0 1.4 1.1 2.5 2.5 2.5H17c2.2 0 4-1.8 4-4 0-2-1.5-3.7-3.4-4-.2-3-2.6-5.4-5.6-5.4-2 0-3.7 1-4.7 2.6-.4-.2-.8-.2-1.3-.2-1.9 0-3.5 1.5-3.5 3.4 0 .2 0 .4.1.6C1.1 7.6 0 9.4 0 11.5z" fill="currentColor"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ============================================================
+   CUSTOM CURSOR
+   ============================================================ */
+const cursor = document.getElementById('cursor');
+let mx = 0, my = 0, cx = 0, cy = 0;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function tick() {
+  cx += (mx - cx) * 0.13;
+  cy += (my - cy) * 0.13;
+  cursor.style.left = cx + 'px';
+  cursor.style.top  = cy + 'px';
+  requestAnimationFrame(tick);
+})();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => cursor.classList.add('expanded'));
+  el.addEventListener('mouseleave', () => cursor.classList.remove('expanded'));
+});
+
+/* ============================================================
+   SCROLL REVEALS
+   ============================================================ */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in');
+      io.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+/* ============================================================
+   HERO PARALLAX — subtle drift as you scroll away
+   ============================================================ */
+const heroInner = document.getElementById('hero-inner');
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!prefersReduced) {
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const y = window.scrollY;
+      if (y < window.innerHeight * 1.2) {
+        heroInner.style.transform = 'translateY(' + (y * 0.18) + 'px)';
+        heroInner.style.opacity = Math.max(0, 1 - y / (window.innerHeight * 0.85));
+      }
+      ticking = false;
+    });
+  }, { passive: true });
+}
+</script>
+
+</body>
+</html>
