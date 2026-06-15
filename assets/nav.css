@@ -26,6 +26,7 @@
 .nav-cluster--left {
   flex-wrap: wrap;
   row-gap: 8px;
+  flex-shrink: 0; /* never squeeze the logo when the menu pills expand */
 }
 
 .nav-cluster--right {
@@ -83,6 +84,8 @@
 /* ---------- logo (plain, no pill) ---------- */
 .nav-pill--logo {
   padding: 0;
+  flex-shrink: 0;
+  overflow: visible; /* never clip the logo image */
   background: transparent;
   border-color: transparent;
   -webkit-backdrop-filter: none;
