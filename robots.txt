@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /legacy%20(do%20not%20use)/
+Disallow: /scripts/
+
+Sitemap: https://rayul.ca/sitemap.xml

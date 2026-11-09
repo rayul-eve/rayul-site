@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>index | rayul</title>
+<meta name="description" content="Every project by rayul, director and DP based in Toronto.">
+<link rel="canonical" href="https://rayul.ca/archive">
+<meta name="theme-color" content="#0b0b0c">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="rayul">
+<meta property="og:title" content="index | rayul">
+<meta property="og:description" content="Every project by rayul, director and DP based in Toronto.">
+<meta property="og:url" content="https://rayul.ca/archive">
+<meta property="og:image" content="https://rayul.ca/assets/og/og-default.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="index | rayul">
+<meta name="twitter:description" content="Every project by rayul, director and DP based in Toronto.">
+<meta name="twitter:image" content="https://rayul.ca/assets/og/og-default.jpg">
+<link rel="icon" type="image/png" href="assets/images/favicon - white.png">
+<link rel="apple-touch-icon" href="assets/images/favicon - white.png">
+<link rel="preconnect" href="https://player.vimeo.com">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.index { padding: 0 var(--pad) 80px; }
+.index-bar {
+  margin-top: 96px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0 16px;
+  border-bottom: 1px solid var(--line);
+}
+.filters { display: flex; gap: 0 28px; flex-wrap: wrap; }
+.filters button { padding: 12px 0; color: var(--quiet); }
+.filters button:hover, .filters button[aria-pressed="true"] { color: var(--ink); }
+.rows { list-style: none; margin: 0; padding: 0; }
+.row {
+  width: 100%; display: grid; grid-template-columns: 56px minmax(0, 1fr) 300px 220px; align-items: baseline; gap: 0 16px;
+  padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--quiet); text-align: left;
+}
+.row .n { font-size: 13px; }
+.row .t { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink-2); }
+.row .r, .row .m { font-size: 13px; letter-spacing: 0.04em; }
+.row .m { text-align: right; }
+.row .th { display: none; }
+.row:hover .t, .row:hover .r, .row:hover .m, .row:hover .n { color: #fff; }
+.preview {
+  position: fixed; left: 0; top: 0; width: 360px; height: 202px; z-index: 5;
+  pointer-events: none; background: #1c1d20; overflow: hidden;
+  opacity: 0; transition: opacity 0.15s ease;
+}
+.preview.on { opacity: 1; }
+.preview img { width: 100%; height: 100%; object-fit: cover; }
+.preview .lbl { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 0 24px; text-align: center; font-size: 11px; letter-spacing: 0.08em; color: #8a8b8e; }
+@media (max-width: 700px) {
+  .index-bar { margin-top: 40px; flex-direction: column; align-items: flex-start; }
+  .filters { gap: 0 18px; }
+  .filters button { padding: 14px 0; }
+  .row { grid-template-columns: 64px minmax(0, 1fr); column-gap: 12px; row-gap: 4px; align-items: start; }
+  .row .n { display: none; }
+  .row .th { display: block; grid-row: span 2; width: 64px; height: 36px; margin-top: 2px; background: #1c1d20; overflow: hidden; }
+  .row .th img { width: 100%; height: 100%; object-fit: cover; }
+  .row .t { font-size: 18px; line-height: 1.2; }
+  .row .r { font-size: 11px; grid-column: 2; }
+  .row .m { display: none; }
+  .row .r .m2 { display: inline; }
+  .preview { display: none; }
+}
+.row .r .m2 { display: none; }
+</style>
+<script src="assets/data/projects.js" defer></script>
+<script src="assets/site.js" defer></script>
+<script src="assets/archive.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <a href="/" class="brand">rayul</a>
+  <nav aria-label="Main">
+    <a href="/">WORK</a>
+    <a href="/archive" aria-current="page">INDEX</a>
+    <a href="/about">ABOUT</a>
+  </nav>
+</header>
+
+<main class="index">
+  <h1 class="sr-only">Index of every project</h1>
+  <div class="index-bar small">
+    <span class="quiet" id="count" aria-live="polite"></span>
+    <div class="filters" id="filters" role="group" aria-label="Filter by role">
+      <button type="button" data-role="" aria-pressed="true">ALL</button>
+      <button type="button" data-role="direction" aria-pressed="false">DIRECTION</button>
+      <button type="button" data-role="dp" aria-pressed="false">DP</button>
+      <button type="button" data-role="edit" aria-pressed="false">EDIT</button>
+      <button type="button" data-role="colour" aria-pressed="false">COLOUR</button>
+      <button type="button" data-role="vfx" aria-pressed="false">VFX</button>
+    </div>
+  </div>
+  <ol class="rows" id="rows"></ol>
+</main>
+
+<div class="preview" id="preview" aria-hidden="true"><img alt=""><span class="lbl"></span></div>
+
+</body>
+</html>

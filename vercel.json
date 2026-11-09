@@ -1,0 +1,19 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/index", "destination": "/", "permanent": true },
+    { "source": "/gallery-v3", "destination": "/archive", "permanent": true },
+    { "source": "/gallery-v3.html", "destination": "/archive", "permanent": true },
+    { "source": "/gallery", "destination": "/archive", "permanent": true },
+    { "source": "/gallery.html", "destination": "/archive", "permanent": true },
+    { "source": "/about-v2", "destination": "/about", "permanent": true },
+    { "source": "/about-v2.html", "destination": "/about", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+    }
+  ]
+}

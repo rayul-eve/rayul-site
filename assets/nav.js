@@ -20,9 +20,10 @@
   const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- active page ---------- */
-  const page = (location.pathname.split('/').pop() || 'index.html');
+  const norm = s => (s.replace(/\.html$/, '').replace(/^\/?index$/, '/').replace(/\/+$/, '') || '/');
+  const page = norm(location.pathname);
   pills.forEach(p => {
-    if (p.getAttribute('href') === page) p.classList.add('is-active');
+    if (norm(p.getAttribute('href') || '') === page) p.classList.add('is-active');
   });
 
   /* ---------- per-element text scramble ---------- */
