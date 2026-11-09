@@ -21,8 +21,9 @@
       return '<li><button type="button" class="row" data-i="' + i + '">' +
         '<span class="th">' + (p.thumb ? '<img alt="" loading="lazy" decoding="async" src="' + p.thumb + '">' : '') + '</span>' +
         '<span class="n">' + S.pad(i + 1) + '</span>' +
-        '<span class="t">' + S.esc(S.name(p)) + '</span>' +
-        '<span class="r">' + S.roles(p) + '<span class="m2"> · ' + S.meta(p) + '</span></span>' +
+        '<span class="t"><span class="who">' + S.esc(p.client.toUpperCase()) + '</span>' +
+          (p.title ? '<span class="what">' + S.esc(p.title.toUpperCase()) + '</span>' : '') + '</span>' +
+        '<span class="r">' + S.roles(p) + '<span class="m2">' + S.meta(p) + '</span></span>' +
         '<span class="m">' + S.meta(p) + '</span>' +
         '</button></li>';
     }).join('');

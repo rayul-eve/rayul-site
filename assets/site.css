@@ -3,16 +3,17 @@
    One typeface, one ground, credits over chrome.
    ============================================================ */
 :root {
-  --ground: #0b0b0c;
+  --ground: #000;
   --ink: #f2f2f0;
   --ink-2: #d6d7d9;
   --quiet: #a9aaad;
   --dim: #6b6c70;
-  --line: #26272a;
-  --line-2: #1d1e21;
+  --line: #222224;
+  --line-2: #18181a;
   --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --pad: 40px;
   --small: 13px;
+  --role: #c4140a;
 }
 @media (max-width: 700px) {
   :root { --pad: 20px; --small: 12px; }
@@ -71,7 +72,7 @@ img { display: block; }
 /* ---------- player overlay ---------- */
 .player {
   position: fixed; inset: 0; z-index: 50;
-  background: #070708;
+  background: #000;
   display: none;
   font-size: var(--small); letter-spacing: 0.04em;
 }

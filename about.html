@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>about | rayul</title>
-<meta name="description" content="Director and DP based in Toronto. Music videos, fashion films and commercials.">
+<meta name="description" content="Director and editor based in Toronto. Fashion films, music videos and commercials.">
 <link rel="canonical" href="https://rayul.ca/about">
-<meta name="theme-color" content="#0b0b0c">
+<meta name="theme-color" content="#000000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="rayul">
 <meta property="og:title" content="about | rayul">
-<meta property="og:description" content="Director and DP based in Toronto. Music videos, fashion films and commercials.">
+<meta property="og:description" content="Director and editor based in Toronto. Fashion films, music videos and commercials.">
 <meta property="og:url" content="https://rayul.ca/about">
 <meta property="og:image" content="https://rayul.ca/assets/og/og-default.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="about | rayul">
-<meta name="twitter:description" content="Director and DP based in Toronto. Music videos, fashion films and commercials.">
+<meta name="twitter:description" content="Director and editor based in Toronto. Fashion films, music videos and commercials.">
 <meta name="twitter:image" content="https://rayul.ca/assets/og/og-default.jpg">
 <link rel="icon" type="image/png" href="assets/images/favicon - white.png">
 <link rel="apple-touch-icon" href="assets/images/favicon - white.png">
@@ -25,12 +25,14 @@
 <style>
 .about { padding: 0 var(--pad) 64px; }
 .top { margin-top: 120px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-items: end; }
-.intro { grid-column: 1 / span 5; display: flex; flex-direction: column; gap: 48px; padding-bottom: 8px; }
-.bio { margin: 0; font-size: 28px; line-height: 1.3; letter-spacing: -0.01em; font-weight: 400; }
-.contact { display: flex; flex-direction: column; gap: 20px; }
-.ul { border-bottom: 1px solid #4a4b4f; padding-bottom: 2px; align-self: flex-start; }
+.intro { grid-column: 1 / span 5; display: flex; flex-direction: column; gap: 40px; padding-bottom: 8px; }
+.bio { display: flex; flex-direction: column; gap: 16px; max-width: 420px; font-size: 17px; line-height: 1.55; }
+.bio p { margin: 0; }
+.bio .bio-2 { color: var(--quiet); }
+.contact { display: flex; flex-direction: column; gap: 12px; }
+.ul { border-bottom: 1px solid #3a3a3d; padding-bottom: 2px; align-self: flex-start; }
 .ul:hover { border-color: #fff; }
-.email { font-size: 28px; letter-spacing: -0.01em; }
+.email { font-size: 17px; }
 .socials { display: flex; gap: 28px; color: var(--quiet); }
 .socials a { padding: 12px 0; }
 .portrait { grid-column: 7 / span 6; }
@@ -51,9 +53,9 @@
   .top { margin-top: 32px; display: flex; flex-direction: column-reverse; align-items: stretch; gap: 40px; }
   .portrait { margin: 0 calc(-1 * var(--pad)); }
   .intro { gap: 36px; padding: 0; }
-  .bio { font-size: 21px; line-height: 1.35; }
-  .contact { gap: 8px; }
-  .email { font-size: 21px; padding-top: 10px; }
+  .bio { font-size: 15px; gap: 14px; max-width: none; }
+  .contact { gap: 4px; }
+  .email { font-size: 15px; padding-top: 10px; }
   .socials { gap: 22px; }
   .socials a { padding: 14px 0; }
   .about .mq { margin-top: 72px; --mq-h: 26px; --mq-gap: 36px; --mq-dur: 48s; }
@@ -84,7 +86,10 @@
   <h1 class="sr-only">About rayul</h1>
   <section class="top">
     <div class="intro">
-      <p class="bio">i am a visual artist who plays many different roles, focusing on direction and cinematography. i aim to create projects that worlds can be imagined from. through my visual practice i hope to learn, teach and grow my arsenal of creative tools.</p>
+      <div class="bio">
+        <p>I'm a director and editor in Toronto, and I love stepping behind the camera as a cinematographer too. I take projects from the first frame to the final grade, mostly in fashion and music.</p>
+        <p class="bio-2">I've worked with Drake, Wizkid, Vitaly, Spencer Badu and Lou Val. My short film Presence won Best First Time Filmmaker at the Montreal Independent Film Festival.</p>
+      </div>
       <div class="contact">
         <a href="mailto:rayul.vfx@gmail.com" class="ul email">rayul.vfx@gmail.com</a>
         <div class="socials small">

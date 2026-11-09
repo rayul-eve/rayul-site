@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>index | rayul</title>
-<meta name="description" content="Every project by rayul, director and DP based in Toronto.">
+<meta name="description" content="Every project by rayul, director and editor based in Toronto.">
 <link rel="canonical" href="https://rayul.ca/archive">
-<meta name="theme-color" content="#0b0b0c">
+<meta name="theme-color" content="#000000">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="rayul">
 <meta property="og:title" content="index | rayul">
-<meta property="og:description" content="Every project by rayul, director and DP based in Toronto.">
+<meta property="og:description" content="Every project by rayul, director and editor based in Toronto.">
 <meta property="og:url" content="https://rayul.ca/archive">
 <meta property="og:image" content="https://rayul.ca/assets/og/og-default.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="index | rayul">
-<meta name="twitter:description" content="Every project by rayul, director and DP based in Toronto.">
+<meta name="twitter:description" content="Every project by rayul, director and editor based in Toronto.">
 <meta name="twitter:image" content="https://rayul.ca/assets/og/og-default.jpg">
 <link rel="icon" type="image/png" href="assets/images/favicon - white.png">
 <link rel="apple-touch-icon" href="assets/images/favicon - white.png">
@@ -38,11 +38,13 @@
   padding: 10px 0; border-bottom: 1px solid var(--line); color: var(--quiet); text-align: left;
 }
 .row .n { font-size: 13px; }
-.row .t { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; color: var(--ink-2); }
-.row .r, .row .m { font-size: 13px; letter-spacing: 0.04em; }
-.row .m { text-align: right; }
+.row .t { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
+.row .who { font-size: 28px; font-weight: 500; letter-spacing: -0.01em; color: #e4e5e6; white-space: nowrap; }
+.row .what { font-size: 13px; letter-spacing: 0.04em; color: #e4e5e6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .r { font-size: 10px; letter-spacing: 0.08em; color: var(--role); }
+.row .m { font-size: 13px; letter-spacing: 0.04em; text-align: right; }
 .row .th { display: none; }
-.row:hover .t, .row:hover .r, .row:hover .m, .row:hover .n { color: #fff; }
+.row:hover .who, .row:hover .what, .row:hover .r, .row:hover .m, .row:hover .n { color: #fff; }
 .preview {
   position: fixed; left: 0; top: 0; width: 360px; height: 202px; z-index: 5;
   pointer-events: none; background: #1c1d20; overflow: hidden;
@@ -59,10 +61,12 @@
   .row .n { display: none; }
   .row .th { display: block; grid-row: span 2; width: 64px; height: 36px; margin-top: 2px; background: #1c1d20; overflow: hidden; }
   .row .th img { width: 100%; height: 100%; object-fit: cover; }
-  .row .t { font-size: 18px; line-height: 1.2; }
-  .row .r { font-size: 11px; grid-column: 2; }
+  .row .t { flex-wrap: wrap; column-gap: 8px; row-gap: 2px; }
+  .row .who { font-size: 18px; line-height: 1.2; white-space: normal; }
+  .row .what { font-size: 12px; white-space: normal; }
+  .row .r { font-size: 9px; letter-spacing: 0.06em; grid-column: 2; }
   .row .m { display: none; }
-  .row .r .m2 { display: inline; }
+  .row .r .m2 { display: inline; margin-left: 10px; font-size: 11px; color: #8e8f93; }
   .preview { display: none; }
 }
 .row .r .m2 { display: none; }
